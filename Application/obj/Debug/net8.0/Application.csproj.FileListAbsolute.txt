@@ -1,0 +1,16 @@
+C:\Other\UniversityHRSystem\Application\bin\Debug\net8.0\Application.deps.json
+C:\Other\UniversityHRSystem\Application\bin\Debug\net8.0\Application.dll
+C:\Other\UniversityHRSystem\Application\bin\Debug\net8.0\Application.pdb
+C:\Other\UniversityHRSystem\Application\obj\Debug\net8.0\Application.GeneratedMSBuildEditorConfig.editorconfig
+C:\Other\UniversityHRSystem\Application\obj\Debug\net8.0\Application.AssemblyInfoInputs.cache
+C:\Other\UniversityHRSystem\Application\obj\Debug\net8.0\Application.AssemblyInfo.cs
+C:\Other\UniversityHRSystem\Application\obj\Debug\net8.0\Application.csproj.CoreCompileInputs.cache
+C:\Other\UniversityHRSystem\Application\obj\Debug\net8.0\Application.sourcelink.json
+C:\Other\UniversityHRSystem\Application\obj\Debug\net8.0\Application.dll
+C:\Other\UniversityHRSystem\Application\obj\Debug\net8.0\refint\Application.dll
+C:\Other\UniversityHRSystem\Application\obj\Debug\net8.0\Application.pdb
+C:\Other\UniversityHRSystem\Application\obj\Debug\net8.0\ref\Application.dll
+C:\Other\UniversityHRSystem\Application\bin\Debug\net8.0\Domain.dll
+C:\Other\UniversityHRSystem\Application\bin\Debug\net8.0\Domain.pdb
+C:\Other\UniversityHRSystem\Application\obj\Debug\net8.0\Application.csproj.AssemblyReference.cache
+C:\Other\UniversityHRSystem\Application\obj\Debug\net8.0\Applicat.44B5EDA2.Up2Date
