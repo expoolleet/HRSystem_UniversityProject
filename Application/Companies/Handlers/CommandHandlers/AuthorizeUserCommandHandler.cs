@@ -1,7 +1,7 @@
 using Application.Companies.Models.Commands;
 using Application.Companies.Models.Response;
 using Application.Companies.Models.Response.Responses;
-using Application.Companies.RepositoryInterfaces;
+using Application.Companies.Repositories;
 using Domain.Companies;
 using MediatR;
 

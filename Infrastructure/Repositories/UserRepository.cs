@@ -1,24 +1,36 @@
-﻿using Domain.Companies;
+using Application.Companies.Models.Response.Responses;
+using Application.Companies.Repositories;
+using Domain.Companies;
+using Infrastructure.DbContext.Contexts;
 
 namespace Infrastructure.Repositories;
 
-class UserRepository : IUserRepository
+public class UserRepository : IUserRepository
 {
-    private List<User> _users = new List<User>();
-    private int _userCounter = 0;
-    
-    public async Task<User> GetUser(Guid? id)
+    private readonly UserDbContext _userDbContext;
+    public UserRepository(UserDbContext userDbContext)
     {
-        ArgumentNullException.ThrowIfNull(id);
-
-        return _users.FirstOrDefault(u => u.Id == id) ??
-               throw new InvalidOperationException("User with given ID not found");
+        _userDbContext = userDbContext;
+    }
+    
+    public Task AddUser(User user, CancellationToken cancellationToken)
+    {
+        _userDbContext.Users.Add(user);
+        return Task.CompletedTask;
     }
 
-    public int UserCounter => _userCounter;
-
-    public async Task<IEnumerable<User>> GetAllUsers()
+    public Task<User?> GetUserById(Guid id, CancellationToken cancellationToken)
     {
-        return _users;
+        return Task.FromResult(_userDbContext.Users.FirstOrDefault(u => u.Id == id));
+    }
+    
+    public Task<User?> FindUser(Guid id, Guid? companyId, string? title, CancellationToken cancellationToken)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<UserResponse> AuthUser(string login, string password, CancellationToken cancellationToken)
+    {
+        throw new NotImplementedException();
     }
 }

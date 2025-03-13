@@ -1,8 +1,13 @@
+using Application.Candidates.Handlers.CommandHandlers;
+using Application.Candidates.Models.Commands;
+using Application.Candidates.Repository;
 using Application.Companies.Handlers.CommandHandlers;
 using Application.Companies.Models.Commands;
 using Application.Companies.Models.Response.Responses;
-using Application.Companies.RepositoryInterfaces;
-using Application.Companies.Services;
+using Application.Companies.Repositories;
+using Application.Vacancies.Handlers.CommandHandlers;
+using Application.Vacancies.Models.Commands;
+using Application.Vacancies.Repository;
 using ApplicationTest.Builders;
 using AutoFixture;
 using Domain.Companies;

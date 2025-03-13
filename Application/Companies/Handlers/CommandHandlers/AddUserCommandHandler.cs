@@ -1,5 +1,5 @@
 using Application.Companies.Models.Commands;
-using Application.Companies.RepositoryInterfaces;
+using Application.Companies.Repositories;
 using Domain.Companies;
 using MediatR;
 

@@ -1,8 +1,10 @@
+using Application.Candidates.Handlers.QueryHandlers;
+using Application.Candidates.Models.Queries;
+using Application.Candidates.Repository;
 using Application.Companies.Context;
-using Application.Companies.Handlers.QueryHandlers;
-using Application.Companies.Models.Queries;
-using Application.Companies.RepositoryInterfaces;
-using Application.Companies.Services;
+using Application.Vacancies.Handlers.QueryHandlers;
+using Application.Vacancies.Models.Queries;
+using Application.Vacancies.Repository;
 using AutoFixture;
 using Domain.Candidates;
 using Domain.Companies;
