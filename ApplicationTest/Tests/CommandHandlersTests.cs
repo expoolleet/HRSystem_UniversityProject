@@ -4,12 +4,14 @@ using Application.Candidates.Repository;
 using Application.Companies.Handlers.CommandHandlers;
 using Application.Companies.Models.Commands;
 using Application.Companies.Models.Response.Responses;
+using Application.Companies.Models.Services;
 using Application.Companies.Repositories;
 using Application.Vacancies.Handlers.CommandHandlers;
 using Application.Vacancies.Models.Commands;
 using Application.Vacancies.Repository;
 using ApplicationTest.Builders;
 using AutoFixture;
+using Domain.Candidates;
 using Domain.Companies;
 using Domain.Vacancies;
 using DomainTest.Builders;
@@ -25,6 +27,7 @@ public class CommandHandlersTests
     private Mock<IUserRepository> _userRepositoryMock;
     private Mock<IVacancyRepository> _vacancyRepositoryMock;
     private Mock<ICandidateRepository> _candidateRepositoryMock;
+    private Mock<ITokenService> _tokenServiceMock;
 
     [SetUp]
     public void Setup()
@@ -33,6 +36,7 @@ public class CommandHandlersTests
         _userRepositoryMock = new Mock<IUserRepository>();
         _vacancyRepositoryMock = new Mock<IVacancyRepository>();
         _candidateRepositoryMock = new Mock<ICandidateRepository>();
+        _tokenServiceMock = new Mock<ITokenService>();
     }
 
     [Test]
@@ -44,7 +48,7 @@ public class CommandHandlersTests
             _ => new UserBuilder());
         _userRepositoryMock
             .Setup(
-                repo => repo.AddUser(
+                repo => repo.Add(
                     command.User,
                     It.IsAny<CancellationToken>()));
         var handler = new AddUserCommandHandler(_userRepositoryMock.Object);
@@ -53,8 +57,9 @@ public class CommandHandlersTests
         await handler.Handle(command, CancellationToken.None);
 
         // Assert
-        _userRepositoryMock.Verify(
-            repo => repo.AddUser(
+        _userRepositoryMock
+            .Verify(
+            repo => repo.Add(
                 command.User,
                 It.IsAny<CancellationToken>()),
             Times.Once);
@@ -65,23 +70,30 @@ public class CommandHandlersTests
     {
         // Arrange
         var command = _fixture.Create<AuthorizeUserCommand>();
-        _fixture.Customize<UserResponse>(_ => new UserResponseBuilder());
-        var response = _fixture.Create<UserResponse>();
+        _fixture.Customize<User>(_ => new UserBuilder(command.Password));
+        var user = _fixture.Create<User>();
         _userRepositoryMock
             .Setup(
-                repo => repo.AuthUser(
+                repo => repo.Get(
                     command.Login,
-                    command.Password,
                     It.IsAny<CancellationToken>()))
-            .ReturnsAsync(response);
-        var handler = new AuthorizeUserCommandHandler(_userRepositoryMock.Object);
+            .ReturnsAsync(user);
+        
+        var token = _fixture.Create<string>();
+        
+        _tokenServiceMock
+            .Setup(
+                service => service.GenerateToken(
+                    user))
+            .Returns(token);
+        var handler = new AuthorizeUserCommandHandler(_userRepositoryMock.Object, _tokenServiceMock.Object);
 
         // Act
         var result = await handler.Handle(command, CancellationToken.None);
 
         // Assert
         result.Should().NotBeNull();
-        result.Should().BeEquivalentTo(response);
+        result.UserId.Should().Be(user.Id);
     }
 
     [Test]
@@ -106,7 +118,8 @@ public class CommandHandlersTests
         await handler.Handle(command, CancellationToken.None);
 
         // Assert
-        _vacancyRepositoryMock.Verify(
+        _vacancyRepositoryMock
+            .Verify(
             repo => repo.Edit(
                 command.Vacancy,
                 command.Description,
@@ -115,48 +128,75 @@ public class CommandHandlersTests
     }
 
     [Test]
-    public async Task AcceptCandidateCommandHandler()
+    public async Task ApproveCandidateCommandHandler()
     {
         // Arrange
-        var command = _fixture.Create<AcceptCandidateCommand>();
+        var command = _fixture.Create<ApproveCandidateCommand>();
+
+        _fixture.Customize<User>(_ => new UserBuilder());
+        var user = _fixture.Create<User>();
+        _fixture.Customize<Candidate>(_ => new CandidateBuilder(user, 1));
+        var candidate = _fixture.Create<Candidate>();
+
         _candidateRepositoryMock
             .Setup(
-                repo => repo.Accept(
-                    command.Candidate,
-                    It.IsAny<CancellationToken>()));
-        var handler = new AcceptCandidateCommandHandler(_candidateRepositoryMock.Object);
-
+                repo => repo.Get(
+                    command.CandidateId,
+                    It.IsAny<CancellationToken>()))
+            .ReturnsAsync(candidate);
+        
+        _userRepositoryMock
+            .Setup(
+                repo => repo.Get(
+                    It.IsAny<Guid>(),
+                    It.IsAny<CancellationToken>()))
+            .ReturnsAsync(user);
+        
         // Act
+        var handler = new ApproveCandidateCommandHandler(
+            _candidateRepositoryMock.Object,
+            _userRepositoryMock.Object);
+        
         await handler.Handle(command, CancellationToken.None);
 
         // Asset
-        _candidateRepositoryMock.Verify(service => service.Accept(
-                command.Candidate,
-                It.IsAny<CancellationToken>()),
-            Times.Once);
+        candidate.Status.Should().Be(CandidateStatus.Approved);
     }
 
     [Test]
-    public async Task DeclineCandidateCommandHandler()
+    public async Task RejectCandidateCommandHandler()
     {
+
         // Arrange
-        var command = _fixture.Create<DeclineCandidateCommand>();
+        var command = _fixture.Create<RejectCandidateCommand>();
+        _fixture.Customize<User>(_ => new UserBuilder());
+        var user = _fixture.Create<User>();
+        _fixture.Customize<Candidate>(_ => new CandidateBuilder(user, 1));
+        var candidate = _fixture.Create<Candidate>();
+
         _candidateRepositoryMock
             .Setup(
-                repo => repo.Decline(
-                    command.Candidate,
-                    It.IsAny<CancellationToken>()));
-        var handler = new DeclineCandidateCommandHandler(_candidateRepositoryMock.Object);
-
+                repo => repo.Get(
+                    command.CandidateId,
+                    It.IsAny<CancellationToken>()))
+            .ReturnsAsync(candidate);
+        
+        _userRepositoryMock
+            .Setup(
+                repo => repo.Get(
+                    command.UserId,
+                    It.IsAny<CancellationToken>()))
+            .ReturnsAsync(user);
+        
         // Act
+        var handler = new RejectCandidateCommandHandler(
+            _candidateRepositoryMock.Object,
+            _userRepositoryMock.Object);
+        
         await handler.Handle(command, CancellationToken.None);
 
         // Asset
-        _candidateRepositoryMock.Verify(
-            service => service.Decline(
-                command.Candidate,
-                It.IsAny<CancellationToken>()),
-            Times.Once);
+        candidate.Status.Should().Be(CandidateStatus.Rejected);
     }
 
     [Test]
@@ -164,21 +204,38 @@ public class CommandHandlersTests
     {
         // Arrange
         var command = _fixture.Create<ReplyVacancyCommand>();
+        _fixture.Customize<User>(_ => new UserBuilder());
+        var user = _fixture.Create<User>();
+        _fixture.Customize<Vacancy>(_ => new VacancyBuilder(user, 1));
+        var vacancy = _fixture.Create<Vacancy>();
         _vacancyRepositoryMock
             .Setup(
-                repo => repo.Reply(
+                repo => repo.Get(
+                    It.Is<Guid?>(x => x == null),
                     command.VacancyId,
+                    It.IsAny<CancellationToken>()))
+            .ReturnsAsync(vacancy);
+
+        _candidateRepositoryMock
+            .Setup(
+                repo => repo.Add(
+                    vacancy.CreateCandidate(command.Document, command.ReferalId),
                     It.IsAny<CancellationToken>()));
-    var handler = new ReplyVacancyCommandHandler(_vacancyRepositoryMock.Object);
+                    
+        var handler = new ReplyVacancyCommandHandler(_vacancyRepositoryMock.Object, _candidateRepositoryMock.Object);
 
         // Act
         await handler.Handle(command, CancellationToken.None);
 
         // Asset
-        _vacancyRepositoryMock.Verify(
-            service => service.Reply(
-                command.VacancyId,
-                It.IsAny<CancellationToken>()),
+        _candidateRepositoryMock
+            .Verify(
+               repo => repo.Add(
+                   It.Is<Candidate>(c =>
+                       c.VacancyId == vacancy.Id &&
+                       c.Document == command.Document &&
+                       c.ReferralId == command.ReferalId),
+                    It.IsAny<CancellationToken>()),
             Times.Once);
     }
 
@@ -194,7 +251,7 @@ public class CommandHandlersTests
         var command = _fixture.Create<CreateVacancyCommand>();
         _vacancyRepositoryMock
             .Setup(
-                repo => repo.Create(
+                repo => repo.Add(
                     command.Vacancy,
                     It.IsAny<CancellationToken>()));
         var handler = new CreateVacancyCommandHandler(_vacancyRepositoryMock.Object);
@@ -203,8 +260,9 @@ public class CommandHandlersTests
         await handler.Handle(command, CancellationToken.None);
 
         // Assert
-        _vacancyRepositoryMock.Verify(
-            repo => repo.Create(
+        _vacancyRepositoryMock
+            .Verify(
+            repo => repo.Add(
                 command.Vacancy,
                 It.IsAny<CancellationToken>()),
             Times.Once);

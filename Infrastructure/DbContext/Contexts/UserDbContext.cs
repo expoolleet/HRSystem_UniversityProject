@@ -1,10 +1,9 @@
 using Domain.Companies;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.DbContext.Contexts;
 
-using Microsoft.EntityFrameworkCore;
-
-public class UserDbContext :DbContext
+public class UserDbContext : Microsoft.EntityFrameworkCore.DbContext
 {
     public DbSet<User> Users { get; set; }
 }

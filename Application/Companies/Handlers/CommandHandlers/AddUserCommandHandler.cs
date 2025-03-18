@@ -17,6 +17,6 @@ public class AddUserCommandHandler : IRequestHandler<AddUserCommand>
     
     public async Task Handle(AddUserCommand request, CancellationToken cancellationToken)
     {
-        await _userRepository.AddUser(request.User, cancellationToken);
+        await _userRepository.Add(request.User, cancellationToken);
     }
 }

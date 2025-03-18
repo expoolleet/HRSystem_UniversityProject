@@ -46,7 +46,7 @@ public class QueryHandlersTests
         var candidates = _fixture.CreateMany<Candidate>(1).ToArray();
         
         _candidateRepositoryMock.Setup(
-            repo => repo.GetCandidatesByFilter(
+            repo => repo.GetCollectionByFilter(
                 query.CompanyId,
                 query.Title,
                 query.Pages,
@@ -63,7 +63,7 @@ public class QueryHandlersTests
         result.Should().BeEquivalentTo(candidates);
         
         _candidateRepositoryMock.Verify(
-            repo => repo.GetCandidatesByFilter(
+            repo => repo.GetCollectionByFilter(
                 query.CompanyId,
                 query.Title,
                 query.Pages,
@@ -85,7 +85,7 @@ public class QueryHandlersTests
         var candidate = _fixture.Create<Candidate>();
         
         _candidateRepositoryMock.Setup(
-                repo => repo.GetCandidate(
+                repo => repo.Get(
                     query.CandidateId,
                     It.IsAny<CancellationToken>()))
             .ReturnsAsync(candidate);
@@ -99,7 +99,7 @@ public class QueryHandlersTests
         result.Should().BeEquivalentTo(candidate);
         
         _candidateRepositoryMock.Verify(
-            repo => repo.GetCandidate(
+            repo => repo.Get(
                 query.CandidateId,
                 It.IsAny<CancellationToken>()),
             Times.Once);
@@ -121,7 +121,7 @@ public class QueryHandlersTests
 
         _vacanctyRepositories
             .Setup(
-            repo => repo.GetVacanciesByFilter(
+            repo => repo.GetCollectionByFilter(
                 It.IsAny<Guid>(),
                 query.CompnayId,
                 query.Title,
@@ -142,7 +142,7 @@ public class QueryHandlersTests
         result.Should().NotBeNull();
         result.Should().BeEquivalentTo(vacancies);
         _vacanctyRepositories.Verify(
-            repo => repo.GetVacanciesByFilter(
+            repo => repo.GetCollectionByFilter(
                 It.IsAny<Guid>(),
                 query.CompnayId,
                 query.Title,
@@ -165,7 +165,7 @@ public class QueryHandlersTests
 
         _vacanctyRepositories
             .Setup(
-                repo => repo.GetVacancy(
+                repo => repo.Get(
                     It.IsAny<Guid>(),
                     query.VacancyId,
                     It.IsAny<CancellationToken>()
@@ -185,7 +185,7 @@ public class QueryHandlersTests
         result.Should().NotBeNull();
         result.Should().BeEquivalentTo(vacancy);
         _vacanctyRepositories.Verify(
-            repo => repo.GetVacancy(
+            repo => repo.Get(
                 It.IsAny<Guid>(),
                 query.VacancyId,
                 It.IsAny<CancellationToken>()),

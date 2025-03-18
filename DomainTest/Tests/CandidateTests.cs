@@ -112,11 +112,15 @@ public class CandidateTests
         candidate.Approve(user, feedback);
 
         // Assert
-        var steps = candidate.Workflow.Steps;
-        steps.First().Status.Should().Be(CandidateStatus.Approved);
+        candidate.Workflow.Steps
+            .OrderBy(s => s.Number)
+            .First()
+            .Status.Should().Be(CandidateStatus.Approved);
  
-        steps.Skip(1).All(s => s.Status == CandidateStatus.InProcessing)
-            .Should().BeTrue();
+        candidate.Workflow.Steps
+            .OrderBy(s => s.Number)
+            .Skip(1)
+            .All(s => s.Status == CandidateStatus.InProcessing).Should().BeTrue();
     }
 
     [Test]
@@ -132,8 +136,10 @@ public class CandidateTests
         candidate.Reject(user, feedback);
         
         // Assert
-        candidate.Workflow.Steps.First().Status
-            .Should().Be(CandidateStatus.Rejected);
+        candidate.Workflow.Steps
+            .OrderBy(s => s.Number)
+            .First()
+            .Status.Should().Be(CandidateStatus.Rejected);
         candidate.Workflow.Status
             .Should().Be(CandidateStatus.Rejected);
     }

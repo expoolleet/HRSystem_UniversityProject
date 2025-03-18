@@ -9,11 +9,11 @@ public class VacancyConfig : IEntityTypeConfiguration<Vacancy>
     public void Configure(EntityTypeBuilder<Vacancy> builder)
     {
         builder
-            .HasKey(x => x.Id);
+            .HasKey(v => v.Id);
 
         builder
             .OwnsOne(
-                x => x.Workflow,
+                v => v.Workflow,
                 workflowBuilder =>
                 {
                     workflowBuilder
@@ -25,7 +25,7 @@ public class VacancyConfig : IEntityTypeConfiguration<Vacancy>
 
                     workflowBuilder
                         .OwnsOne(
-                            x => x.Steps,
+                            v => v.Steps,
                             stepsBuilder =>
                             {
                                 stepsBuilder
@@ -33,7 +33,7 @@ public class VacancyConfig : IEntityTypeConfiguration<Vacancy>
                                 
                                 stepsBuilder
                                     .HasKey("Id");
-                                
+                              
                                 stepsBuilder
                                     .WithOwner()
                                     .HasForeignKey("VacancyWorkflowId");

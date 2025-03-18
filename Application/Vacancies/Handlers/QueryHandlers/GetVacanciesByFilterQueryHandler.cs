@@ -22,7 +22,7 @@ public class GetVacanciesByFilterQueryHandler : IRequestHandler<GetVacanciesByFi
     
     public async Task<IReadOnlyCollection<Vacancy>> Handle(GetVacanciesByFilterQuery request, CancellationToken cancellationToken)
     {
-        return await _vacancyRepository.GetVacanciesByFilter(
+        return await _vacancyRepository.GetCollectionByFilter(
             _userContext.GetUserId(), 
             request.CompnayId, 
             request.Title, 

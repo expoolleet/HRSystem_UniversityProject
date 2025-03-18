@@ -21,6 +21,13 @@ public class GetVacancyQueryHandler : IRequestHandler<GetVacancyQuery, Vacancy>
     
     public async Task<Vacancy> Handle(GetVacancyQuery request, CancellationToken cancellationToken)
     {
-        return await _vacancyRepository.GetVacancy(_userContext.GetUserId(), request.VacancyId, cancellationToken);
+        var vacancy = await _vacancyRepository.Get(_userContext.GetUserId(), request.VacancyId, cancellationToken);
+
+        if (vacancy == null)
+        {
+            throw new ApplicationException("Vacancy not found");
+        }
+        
+        return vacancy;
     }
 }

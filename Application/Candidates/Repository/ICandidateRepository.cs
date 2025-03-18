@@ -4,23 +4,18 @@ namespace Application.Candidates.Repository;
 
 public interface ICandidateRepository
 { 
-    Task Accept(
+    Task Add(
         Candidate candidate,
         CancellationToken cancellationToken);
-
-    Task Decline(
-        Candidate candidate, 
-        CancellationToken cancellationToken);
-
-    Task<Candidate> GetCandidate(
+    
+    Task<Candidate> Get(
         Guid id,
         CancellationToken cancellationToken);
 
-    Task<IReadOnlyCollection<Candidate>> GetCandidatesByFilter(
+    Task<IReadOnlyCollection<Candidate>> GetCollectionByFilter(
         Guid? companyId,
         string? title,
-        int pages,
+        int page,
         int pageSize,
-        CancellationToken cancellationToken
-        );
+        CancellationToken cancellationToken);
 }

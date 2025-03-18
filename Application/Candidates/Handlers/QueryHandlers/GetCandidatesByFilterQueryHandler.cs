@@ -17,7 +17,7 @@ public class GetCandidatesByFilterQueryHandler : IRequestHandler<GetCandidatesBy
     
     public async Task<IReadOnlyCollection<Candidate>> Handle(GetCandidatesByFilterQuery request, CancellationToken cancellationToken)
     {
-        return await _candidateRepository.GetCandidatesByFilter(
+        return await _candidateRepository.GetCollectionByFilter(
             request.CompanyId,
             request.Title,
             request.Pages,

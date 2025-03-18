@@ -4,27 +4,23 @@ namespace Application.Vacancies.Repository;
 
 public interface IVacancyRepository
 {
-    Task Create(
+    Task Add(
         Vacancy vacancy, 
         CancellationToken cancellationToken);
     
-    Task<IReadOnlyCollection<Vacancy>> GetVacanciesByFilter(
+    Task<IReadOnlyCollection<Vacancy>> GetCollectionByFilter(
         Guid? userId,
         Guid? companyId,
         string? title, 
         CancellationToken cancellationToken);
 
-    Task<Vacancy> GetVacancy(
+    Task<Vacancy> Get(
         Guid? userId,
         Guid vacancyId,
         CancellationToken cancellationToken);
 
     Task Edit(
         Vacancy vacancy,
-        string? description,
-        CancellationToken cancellationToken);
-    
-    Task Reply(
-        Guid vacancyId, 
+        string description,
         CancellationToken cancellationToken);
 }

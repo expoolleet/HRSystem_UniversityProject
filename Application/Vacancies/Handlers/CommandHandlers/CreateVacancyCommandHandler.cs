@@ -15,6 +15,6 @@ public class CreateVacancyCommandHandler : IRequestHandler<CreateVacancyCommand>
     }
     public async Task Handle(CreateVacancyCommand request, CancellationToken cancellationToken)
     {
-        await _vacancyRepository.Create(request.Vacancy, cancellationToken);
+        await _vacancyRepository.Add(request.Vacancy, cancellationToken);
     }
 }

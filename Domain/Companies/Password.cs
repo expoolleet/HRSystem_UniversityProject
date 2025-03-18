@@ -27,7 +27,7 @@ public class Password
         return new Password(passwordHash, salt: hmac.Key);
     }
     
-    internal bool Verify(string passwordToVerify)
+    public bool Verify(string passwordToVerify)
     {
         ArgumentNullException.ThrowIfNull(passwordToVerify);
 

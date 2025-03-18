@@ -2,6 +2,7 @@ using Application.Companies.Models.Response.Responses;
 using Application.Companies.Repositories;
 using Domain.Companies;
 using Infrastructure.DbContext.Contexts;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repositories;
 
@@ -10,27 +11,24 @@ public class UserRepository : IUserRepository
     private readonly UserDbContext _userDbContext;
     public UserRepository(UserDbContext userDbContext)
     {
+        ArgumentNullException.ThrowIfNull(userDbContext);
         _userDbContext = userDbContext;
     }
     
-    public Task AddUser(User user, CancellationToken cancellationToken)
+    public async Task Add(User user, CancellationToken cancellationToken)
     {
-        _userDbContext.Users.Add(user);
-        return Task.CompletedTask;
+        await _userDbContext.Users.AddAsync(user, cancellationToken);
     }
 
-    public Task<User?> GetUserById(Guid id, CancellationToken cancellationToken)
+    public async Task<User> Get(Guid userId, CancellationToken cancellationToken)
     {
-        return Task.FromResult(_userDbContext.Users.FirstOrDefault(u => u.Id == id));
-    }
-    
-    public Task<User?> FindUser(Guid id, Guid? companyId, string? title, CancellationToken cancellationToken)
-    {
-        throw new NotImplementedException();
+       var user = await _userDbContext.Users.FindAsync(userId, cancellationToken);
+       return user!;
     }
 
-    public Task<UserResponse> AuthUser(string login, string password, CancellationToken cancellationToken)
+    public async Task<User> Get(string login, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        var user = await _userDbContext.Users.FindAsync(login, cancellationToken);
+        return user!;
     }
 }

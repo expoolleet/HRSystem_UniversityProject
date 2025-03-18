@@ -1,5 +1,7 @@
+using Application.Candidates.Repository;
 using Application.Vacancies.Models.Commands;
 using Application.Vacancies.Repository;
+using Domain.Candidates;
 using MediatR;
 
 namespace Application.Vacancies.Handlers.CommandHandlers;
@@ -7,14 +9,27 @@ namespace Application.Vacancies.Handlers.CommandHandlers;
 public class ReplyVacancyCommandHandler : IRequestHandler<ReplyVacancyCommand>
 {
     private readonly IVacancyRepository _vacancyRepository;
-    public ReplyVacancyCommandHandler(IVacancyRepository vacancyRepository)
+    private readonly ICandidateRepository _candidateRepository;
+    
+    public ReplyVacancyCommandHandler(IVacancyRepository vacancyRepository, ICandidateRepository candidateRepository)
     {
         ArgumentNullException.ThrowIfNull(vacancyRepository);
+        ArgumentNullException.ThrowIfNull(candidateRepository);
+        _candidateRepository = candidateRepository;
         _vacancyRepository = vacancyRepository;
     }
     
     public async Task Handle(ReplyVacancyCommand request, CancellationToken cancellationToken)
     {
-        await _vacancyRepository.Reply(request.VacancyId, cancellationToken);
+        var vacancy = await _vacancyRepository.Get(null, request.VacancyId, cancellationToken);
+
+        if (vacancy == null)
+        {
+            throw new ArgumentException("Vacancy not found");
+        }
+        
+        var candidate = vacancy.CreateCandidate(request.Document, request.ReferalId);
+
+        await _candidateRepository.Add(candidate, cancellationToken);
     }
 }

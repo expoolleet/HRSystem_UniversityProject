@@ -5,22 +5,15 @@ namespace Application.Companies.Repositories;
 
 public interface IUserRepository
 {
-    Task AddUser(
+    Task Add(
         User user,
         CancellationToken cancellationToken);
     
-    Task<User?> GetUserById(
-        Guid id, 
+    Task<User> Get(
+        Guid userId,
         CancellationToken cancellationToken);
 
-    Task<UserResponse> AuthUser(
-        string login, 
-        string password, 
-        CancellationToken cancellationToken);
-
-    Task<User?> FindUser(
-        Guid id,
-        Guid? companyId,
-        string? title,
+    Task<User> Get(
+        string login,
         CancellationToken cancellationToken);
 }

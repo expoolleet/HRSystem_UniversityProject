@@ -17,6 +17,13 @@ public class GetCandidateQueryHandler : IRequestHandler<GetCandidateQuery, Candi
     
     public async Task<Candidate> Handle(GetCandidateQuery request, CancellationToken cancellationToken)
     {
-        return await _candidateRepository.GetCandidate(request.CandidateId, cancellationToken);
+        var candidate = await _candidateRepository.Get(request.CandidateId, cancellationToken);
+
+        if (candidate == null)
+        {
+            throw new ApplicationException("Candidate not found");
+        }
+        
+        return candidate;
     }
 }
