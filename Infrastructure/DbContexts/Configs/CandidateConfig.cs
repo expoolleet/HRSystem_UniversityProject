@@ -3,7 +3,7 @@ using Domain.Vacancies;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Infrastructure.DbContext.Configs;
+namespace Infrastructure.DbContexts.Configs;
 
 public class CandidateConfig : IEntityTypeConfiguration<Candidate>
 {
@@ -11,12 +11,11 @@ public class CandidateConfig : IEntityTypeConfiguration<Candidate>
     {
         builder
             .HasKey(c => c.Id);
-        
+
         builder
             .HasOne<Vacancy>()
             .WithMany()
-            .HasForeignKey(c => c.VacancyId)
-            .OnDelete(DeleteBehavior.Restrict);
+            .HasForeignKey(c => c.VacancyId);
 
         builder
             .OwnsOne(
@@ -31,7 +30,7 @@ public class CandidateConfig : IEntityTypeConfiguration<Candidate>
                         .HasKey("CandidateId");
 
                     workflowBuilder
-                        .OwnsOne(
+                        .OwnsMany(
                             c => c.Steps,
                             stepBuilder =>
                             {

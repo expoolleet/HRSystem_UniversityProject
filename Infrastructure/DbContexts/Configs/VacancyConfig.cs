@@ -2,7 +2,7 @@ using Domain.Vacancies;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Infrastructure.DbContext.Configs;
+namespace Infrastructure.DbContexts.Configs;
 
 public class VacancyConfig : IEntityTypeConfiguration<Vacancy>
 {
@@ -24,7 +24,7 @@ public class VacancyConfig : IEntityTypeConfiguration<Vacancy>
                         .HasKey("VacancyId");
 
                     workflowBuilder
-                        .OwnsOne(
+                        .OwnsMany(
                             v => v.Steps,
                             stepsBuilder =>
                             {

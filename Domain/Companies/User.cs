@@ -13,7 +13,8 @@ public sealed class User
     }
 
     public Guid Id { get; private init; }
-    public Guid RoleId { get; private init; }
+    public Guid RoleId { get; private init; } 
+    public Guid CompanyId { get; private init; }
     public Password Password { get; private init; }
     public string Name { get; private init; }
 

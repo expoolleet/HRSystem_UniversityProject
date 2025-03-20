@@ -1,23 +1,23 @@
 using Application.Vacancies.Repository;
 using Domain.Vacancies;
-using Infrastructure.DbContext.Contexts;
+using Infrastructure.DbContexts;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repositories;
 
 public class VacancyRepository : IVacancyRepository
 {
-    private readonly VacancyDbContext _vacancyDbContext;
+    private readonly MainDbContext _dbContext;
 
-    public VacancyRepository(VacancyDbContext vacancyDbContext)
+    public VacancyRepository(MainDbContext dbContext)
     {
-        ArgumentNullException.ThrowIfNull(vacancyDbContext);
-        _vacancyDbContext = vacancyDbContext;
+        ArgumentNullException.ThrowIfNull(dbContext);
+        _dbContext = dbContext;
     }
 
     public async Task Add(Vacancy vacancy, CancellationToken cancellationToken)
     {
-        await _vacancyDbContext.Vacancies.AddAsync(vacancy, cancellationToken);
+        await _dbContext.Vacancies.AddAsync(vacancy, cancellationToken);
     }
     
     public async Task<Vacancy> Get(Guid? userId, Guid vacancyId, CancellationToken cancellationToken)
@@ -26,13 +26,13 @@ public class VacancyRepository : IVacancyRepository
         
         if (userId.HasValue)
         {
-            vacancy = await _vacancyDbContext.Vacancies
+            vacancy = await _dbContext.Vacancies
                 .Include(v => v.Workflow)
                 .FirstAsync(v => v.Id == vacancyId, cancellationToken);
         }
         else
         {
-            vacancy = await _vacancyDbContext.Vacancies
+            vacancy = await _dbContext.Vacancies
                 .FindAsync(vacancyId, cancellationToken);
         }
 
@@ -41,7 +41,7 @@ public class VacancyRepository : IVacancyRepository
 
     public async Task Edit(Vacancy vacancy, string description, CancellationToken cancellationToken)
     {
-        var trackedVacancy = await _vacancyDbContext.Vacancies.FindAsync(vacancy.Id, cancellationToken);
+        var trackedVacancy = await _dbContext.Vacancies.FindAsync(vacancy.Id, cancellationToken);
 
         if (trackedVacancy != null)
         {
@@ -50,16 +50,16 @@ public class VacancyRepository : IVacancyRepository
         else
         {
             vacancy.Description = description;
-            _vacancyDbContext.Attach(vacancy);
-            _vacancyDbContext.Entry(vacancy).State = EntityState.Modified;
+            _dbContext.Attach(vacancy);
+            _dbContext.Entry(vacancy).State = EntityState.Modified;
         }
 
-        await _vacancyDbContext.SaveChangesAsync(cancellationToken);
+        await _dbContext.SaveChangesAsync(cancellationToken);
     }
         
     public async Task<IReadOnlyCollection<Vacancy>> GetCollectionByFilter(Guid? userId, Guid? companyId, string? title, CancellationToken cancellationToken)
     {
-        IQueryable<Vacancy> query = _vacancyDbContext.Vacancies;
+        IQueryable<Vacancy> query = _dbContext.Vacancies;
 
         if (userId.HasValue)
         {

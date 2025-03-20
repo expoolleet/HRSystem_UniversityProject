@@ -1,39 +1,43 @@
 using Application.Candidates.Repository;
 using Domain.Candidates;
-using Infrastructure.DbContext.Contexts;
+using Infrastructure.DbContexts;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repositories;
 
 public class CandidateRepository : ICandidateRepository
 {
-    private CandidateDbContext _candidateDbContext;
+    private readonly MainDbContext _dbContext;
 
-    public CandidateRepository(CandidateDbContext candidateDbContext)
+    public CandidateRepository(MainDbContext dbContext)
     {
-        ArgumentNullException.ThrowIfNull(candidateDbContext);
-        _candidateDbContext = candidateDbContext;
+        ArgumentNullException.ThrowIfNull(dbContext);
+        _dbContext = dbContext;
     }
 
     public async Task Add(Candidate candidate, CancellationToken cancellationToken)
     {
-        await _candidateDbContext.AddAsync(candidate, cancellationToken);
+        await _dbContext.AddAsync(candidate, cancellationToken);
     }
 
     public async Task<Candidate> Get(Guid id, CancellationToken cancellationToken)
     {
-        var candidate = await _candidateDbContext.FindAsync<Candidate>(id, cancellationToken);
+        var candidate = await _dbContext.FindAsync<Candidate>(id, cancellationToken);
         return candidate!;
     }
 
     public async Task<IReadOnlyCollection<Candidate>> GetCollectionByFilter(Guid? companyId, string? title, int page, int pageSize,
         CancellationToken cancellationToken)
     {
-        var query = from candidate in _candidateDbContext.Candidates
-                    join vacancy in _candidateDbContext.Vacancies on candidate.VacancyId equals vacancy.Id
-                    where (!companyId.HasValue || vacancy.CompanyId == companyId) &&
-                          (string.IsNullOrWhiteSpace(title) || title.Contains(title))
-                          select candidate;
+        var query = _dbContext.Candidates
+            .Join(_dbContext.Vacancies,
+                candidate => candidate.VacancyId,
+                vacancy => vacancy.Id,
+                (candidate, vacancy) => new { Candidate = candidate, Vacancy = vacancy })
+            .Where(cv => (!companyId.HasValue || cv.Vacancy.CompanyId == companyId) &&
+                         (string.IsNullOrEmpty(title) || cv.Vacancy.Description.Contains(title)))
+            .Select(cv => cv.Candidate);
+        
         var candidates = await query
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
