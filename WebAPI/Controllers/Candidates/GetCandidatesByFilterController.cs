@@ -1,3 +1,4 @@
+using Application.Candidates.Models.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,23 +17,14 @@ public class GetCandidatesByFilterController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> Get([FromBody] GetCandidatesByFilterRequest? request)
+    public async Task<IActionResult> GetCandidatesByFilter([FromBody] GetCandidatesByFilterQuery? query)
     {
-        if (request == null)
+        if (query == null)
         {
             return BadRequest("Request body is required");
         }
-        
-        var result = await _mediator.Send(request);
+        var result = await _mediator.Send(query);
         
         return Ok(result);
     }
-}
-
-public class GetCandidatesByFilterRequest
-{
-    public Guid? CompanyId { get; set; }
-    public string? Title { get; set; }
-    public int Pages { get; set; }
-    public int PageSize { get; set; }
 }

@@ -18,14 +18,13 @@ public class GetCandidateController : Controller
     }
 
     [HttpGet("{candidateId:guid}")]
-    public async Task<IActionResult> Get([FromRoute] Guid candidateId)
+    public async Task<IActionResult> GetCandidate([FromRoute] Guid candidateId)
     {
         var query = new GetCandidateQuery
         {
             CandidateId = candidateId
         };
         var result = await _mediator.Send(query);
-
         return Ok(result);
     }
 }

@@ -16,28 +16,14 @@ public class RejectCandidateController : ControllerBase
         _mediator = mediator;
     }
 
-    [HttpPost("{candidateId:guid}")]
-    public async Task<IActionResult> Reject([FromRoute] Guid candidateId, [FromBody] RejectCandidateRequest? request)
+    [HttpPost]
+    public async Task<IActionResult> RejectCandidate([FromBody] RejectCandidateCommand? command)
     {
-        if (request == null)
+        if (command == null)
         {
             return BadRequest("Request body is required");
         }
-
-        var command = new RejectCandidateCommand
-        {
-            CandidateId = candidateId,
-            UserId = request.UserId,
-            Feedback = request.Feedback,
-        };
-
         await _mediator.Send(command);
         return Ok("Candidate rejected successfully");
     }
 }   
-
-public class RejectCandidateRequest
-{
-    public Guid UserId { get; set; }
-    public string Feedback { get; set; } = string.Empty;
-}
