@@ -4,3 +4,9 @@
     build:
       context: .
       dockerfile: WebAPI/Dockerfile
+
+  webapi-1:
+    image: webapi-1
+    build:
+      context: .
+      dockerfile: WebApi/Dockerfile

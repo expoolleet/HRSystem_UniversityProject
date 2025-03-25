@@ -8,5 +8,5 @@ public class ApproveCandidateCommand : IRequest
 {
     public Guid CandidateId { get; set; }
     public Guid UserId { get; set; }
-    public string Feedback { get; set; } = string.Empty;
+    public required string Feedback { get; set; }
 }
