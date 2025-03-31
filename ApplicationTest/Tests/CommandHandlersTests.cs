@@ -5,6 +5,7 @@ using Application.Companies.Handlers.CommandHandlers;
 using Application.Companies.Models.Commands;
 using Application.Companies.Models.Response.Responses;
 using Application.Companies.Models.Services;
+using Application.Companies.Models.Submodels;
 using Application.Companies.Repositories;
 using Application.Vacancies.Handlers.CommandHandlers;
 using Application.Vacancies.Models.Commands;
@@ -43,15 +44,20 @@ public class CommandHandlersTests
     public async Task AddUserCommandHandler()
     {
         // Arrange
-        var command = _fixture.Create<AddUserCommand>();
-        _fixture.Customize<User>(
-            _ => new UserBuilder());
+        var command = _fixture.Create<CreateUserCommand>();
+        
+        var user = User.Create(
+            command.RoleId,
+            command.CompanyId,
+            command.Password,
+            command.Name);
+        
         _userRepositoryMock
             .Setup(
-                repo => repo.Add(
-                    command.User,
+                repo => repo.Create(
+                    user,
                     It.IsAny<CancellationToken>()));
-        var handler = new AddUserCommandHandler(_userRepositoryMock.Object);
+        var handler = new CreateUserCommandHandler(_userRepositoryMock.Object);
 
         // Act
         await handler.Handle(command, CancellationToken.None);
@@ -59,8 +65,8 @@ public class CommandHandlersTests
         // Assert
         _userRepositoryMock
             .Verify(
-            repo => repo.Add(
-                command.User,
+            repo => repo.Create(
+                user,
                 It.IsAny<CancellationToken>()),
             Times.Once);
     }
@@ -79,7 +85,7 @@ public class CommandHandlersTests
                     It.IsAny<CancellationToken>()))
             .ReturnsAsync(user);
         
-        var token = _fixture.Create<string>();
+        var token = _fixture.Create<Token>();
         
         _tokenServiceMock
             .Setup(
@@ -211,7 +217,6 @@ public class CommandHandlersTests
         _vacancyRepositoryMock
             .Setup(
                 repo => repo.Get(
-                    It.Is<Guid?>(x => x == null),
                     command.VacancyId,
                     It.IsAny<CancellationToken>()))
             .ReturnsAsync(vacancy);
@@ -249,10 +254,16 @@ public class CommandHandlersTests
         _fixture.Customize<Vacancy>(
             _ => new VacancyBuilder(user, 1));
         var command = _fixture.Create<CreateVacancyCommand>();
+
+        var vacancy = Vacancy.Create(
+            command.CompanyId,
+            command.Description,
+            command.Workflow);
+        
         _vacancyRepositoryMock
             .Setup(
-                repo => repo.Add(
-                    command.Vacancy,
+                repo => repo.Create(
+                    vacancy,
                     It.IsAny<CancellationToken>()));
         var handler = new CreateVacancyCommandHandler(_vacancyRepositoryMock.Object);
 
@@ -262,8 +273,8 @@ public class CommandHandlersTests
         // Assert
         _vacancyRepositoryMock
             .Verify(
-            repo => repo.Add(
-                command.Vacancy,
+            repo => repo.Create(
+                vacancy,
                 It.IsAny<CancellationToken>()),
             Times.Once);
     }

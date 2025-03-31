@@ -1,7 +1,7 @@
 using Application.Candidates.Handlers.QueryHandlers;
 using Application.Candidates.Models.Queries;
 using Application.Candidates.Repository;
-using Application.Companies.Context;
+using Application.Context;
 using Application.Vacancies.Handlers.QueryHandlers;
 using Application.Vacancies.Models.Queries;
 using Application.Vacancies.Repository;
@@ -21,7 +21,7 @@ public class QueryHandlersTests
     private  Fixture _fixture;
 
     private Mock<ICandidateRepository> _candidateRepositoryMock;
-    private Mock<IVacancyRepository> _vacanctyRepositories;
+    private Mock<IVacancyRepository> _vacancyRepositories;
     private Mock<IUserContext> _userContextMock;
     
     [SetUp]
@@ -29,7 +29,7 @@ public class QueryHandlersTests
     {
         _fixture = new Fixture();
         _candidateRepositoryMock = new Mock<ICandidateRepository>();
-        _vacanctyRepositories = new Mock<IVacancyRepository>();
+        _vacancyRepositories = new Mock<IVacancyRepository>();
         _userContextMock = new Mock<IUserContext>();
     }
 
@@ -49,7 +49,7 @@ public class QueryHandlersTests
             repo => repo.GetCollectionByFilter(
                 query.CompanyId,
                 query.Title,
-                query.Pages,
+                query.Page,
                 query.PageSize,
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(candidates);
@@ -66,7 +66,7 @@ public class QueryHandlersTests
             repo => repo.GetCollectionByFilter(
                 query.CompanyId,
                 query.Title,
-                query.Pages,
+                query.Page,
                 query.PageSize,
                 It.IsAny<CancellationToken>()),
             Times.Once);
@@ -119,20 +119,19 @@ public class QueryHandlersTests
         
         var vacancies = _fixture.CreateMany<Vacancy>(1).ToArray();
 
-        _vacanctyRepositories
+        _vacancyRepositories
             .Setup(
             repo => repo.GetCollectionByFilter(
-                It.IsAny<Guid>(),
                 query.CompnayId,
                 query.Title,
                 It.IsAny<CancellationToken>()
             ))
             .ReturnsAsync(vacancies);
 
-        _userContextMock.Setup(repo => repo.GetUserId());
+        _userContextMock.Setup(repo => repo.GetUserId(It.IsAny<CancellationToken>()));
 
         var handler = new GetVacanciesByFilterQueryHandler(
-            _vacanctyRepositories.Object, 
+            _vacancyRepositories.Object, 
             _userContextMock.Object);
         
         // Act
@@ -141,9 +140,8 @@ public class QueryHandlersTests
         // Assert
         result.Should().NotBeNull();
         result.Should().BeEquivalentTo(vacancies);
-        _vacanctyRepositories.Verify(
+        _vacancyRepositories.Verify(
             repo => repo.GetCollectionByFilter(
-                It.IsAny<Guid>(),
                 query.CompnayId,
                 query.Title,
                 It.IsAny<CancellationToken>()),
@@ -163,19 +161,18 @@ public class QueryHandlersTests
         
         var vacancy = _fixture.Create<Vacancy>();
 
-        _vacanctyRepositories
+        _vacancyRepositories
             .Setup(
                 repo => repo.Get(
-                    It.IsAny<Guid>(),
                     query.VacancyId,
                     It.IsAny<CancellationToken>()
                 ))
             .ReturnsAsync(vacancy);
 
-        _userContextMock.Setup(repo => repo.GetUserId());
+        _userContextMock.Setup(repo => repo.GetUserId(It.IsAny<CancellationToken>()));
 
         var handler = new GetVacancyQueryHandler(
-            _vacanctyRepositories.Object, 
+            _vacancyRepositories.Object, 
             _userContextMock.Object);
         
         // Act
@@ -184,9 +181,8 @@ public class QueryHandlersTests
         // Assert
         result.Should().NotBeNull();
         result.Should().BeEquivalentTo(vacancy);
-        _vacanctyRepositories.Verify(
+        _vacancyRepositories.Verify(
             repo => repo.Get(
-                It.IsAny<Guid>(),
                 query.VacancyId,
                 It.IsAny<CancellationToken>()),
             Times.Once);

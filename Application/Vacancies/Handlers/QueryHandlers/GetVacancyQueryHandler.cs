@@ -1,4 +1,4 @@
-using Application.Companies.Context;
+using Application.Context;
 using Application.Vacancies.Models.Queries;
 using Application.Vacancies.Repository;
 using Domain.Vacancies;
@@ -21,13 +21,20 @@ public class GetVacancyQueryHandler : IRequestHandler<GetVacancyQuery, Vacancy>
     
     public async Task<Vacancy> Handle(GetVacancyQuery request, CancellationToken cancellationToken)
     {
-        var vacancy = await _vacancyRepository.Get(_userContext.GetUserId(), request.VacancyId, cancellationToken);
-
+        Vacancy vacancy;
+        var userId = await _userContext.GetUserId(cancellationToken);
+        if (userId == Guid.Empty)
+        {
+            vacancy = await _vacancyRepository.GetShort(request.VacancyId, cancellationToken);
+        }
+        else
+        {
+            vacancy = await _vacancyRepository.Get(request.VacancyId, cancellationToken);
+        }
         if (vacancy == null)
         {
             throw new ApplicationException("Vacancy not found");
         }
-        
         return vacancy;
     }
 }

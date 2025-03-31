@@ -17,7 +17,7 @@ public class AuthorizeUserCommandHandler : IRequestHandler<AuthorizeUserCommand,
         _userRepository = userRepository;
         _tokenService = tokenService;
     }
-    
+        
     public async Task<UserResponse> Handle(AuthorizeUserCommand request, CancellationToken cancellationToken)
     {
         if (request.Login == null)

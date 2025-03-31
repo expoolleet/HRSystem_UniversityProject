@@ -5,7 +5,7 @@ namespace Application.Companies.Repositories;
 
 public interface IUserRepository
 {
-    Task Add(
+    Task Create(
         User user,
         CancellationToken cancellationToken);
     

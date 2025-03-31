@@ -5,5 +5,5 @@ namespace Application.Candidates.Models.Queries;
 
 public class GetCandidateQuery : IRequest<Candidate>
 {
-    public Guid CandidateId { get; set; }
+    public Guid CandidateId { get; init; }
 }

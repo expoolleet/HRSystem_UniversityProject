@@ -1,4 +1,5 @@
 using Application.Companies.Models.Response.Responses;
+using Application.Companies.Models.Submodels;
 using AutoFixture;
 using AutoFixture.Kernel;
 
@@ -17,6 +18,6 @@ public class UserResponseBuilder : ISpecimenBuilder
             context.Create<Guid>(),
             context.Create<string>(),
             context.Create<Guid>(),
-            context.Create<string>());
+            context.Create<Token>());
     }
 }

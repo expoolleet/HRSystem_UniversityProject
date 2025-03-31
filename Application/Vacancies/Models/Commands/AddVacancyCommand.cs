@@ -5,5 +5,5 @@ namespace Application.Vacancies.Models.Commands;
 
 public class AddVacancyCommand : IRequest
 {
-    public required Vacancy Vacancy { get; set; }
+    public required Vacancy Vacancy { get; init; }
 }

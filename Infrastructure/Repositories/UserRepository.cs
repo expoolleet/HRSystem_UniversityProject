@@ -13,7 +13,7 @@ public class UserRepository : IUserRepository
         _dbContext = dbContext;
     }
     
-    public async Task Add(User user, CancellationToken cancellationToken)
+    public async Task Create(User user, CancellationToken cancellationToken)
     {
         await _dbContext.Users.AddAsync(user, cancellationToken);
     }

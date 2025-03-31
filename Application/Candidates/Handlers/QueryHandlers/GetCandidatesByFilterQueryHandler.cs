@@ -20,7 +20,7 @@ public class GetCandidatesByFilterQueryHandler : IRequestHandler<GetCandidatesBy
         return await _candidateRepository.GetCollectionByFilter(
             request.CompanyId,
             request.Title,
-            request.Pages,
+            request.Page,
             request.PageSize,
             cancellationToken);
     }

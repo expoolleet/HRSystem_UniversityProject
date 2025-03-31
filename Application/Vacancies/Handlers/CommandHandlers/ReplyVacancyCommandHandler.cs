@@ -21,7 +21,7 @@ public class ReplyVacancyCommandHandler : IRequestHandler<ReplyVacancyCommand>
     
     public async Task Handle(ReplyVacancyCommand request, CancellationToken cancellationToken)
     {
-        var vacancy = await _vacancyRepository.Get(null, request.VacancyId, cancellationToken);
+        var vacancy = await _vacancyRepository.Get(request.VacancyId, cancellationToken);
 
         if (vacancy == null)
         {

@@ -17,7 +17,7 @@ public sealed class Vacancy
 
     public Guid Id { get; private init; }
     public Guid CompanyId { get; private init; }
-    public string Description { get;  set; }
+    public string? Description { get;  set; }
     public VacancyWorkflow Workflow { get; private init; }
 
     public static Vacancy Create(Guid companyId, string? description, VacancyWorkflow? workflow)

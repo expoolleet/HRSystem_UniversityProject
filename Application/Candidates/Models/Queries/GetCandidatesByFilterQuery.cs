@@ -5,10 +5,10 @@ namespace Application.Candidates.Models.Queries;
 
 public class GetCandidatesByFilterQuery : IRequest<IReadOnlyCollection<Candidate>>
 {
-    public Guid? CompanyId { get; set; }
-    public string? Title { get; set; }
+    public Guid? CompanyId { get; init; }
+    public string? Title { get; init; }
     
-    public int Pages { get; set; }
+    public int Page { get; init; }
     
-    public int PageSize { get; set; }
+    public int PageSize { get; init; }
 }

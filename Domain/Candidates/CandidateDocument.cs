@@ -4,6 +4,10 @@ namespace Domain.Candidates;
 
 public sealed class CandidateDocument
 {
+    public string Name { get; private init; }
+    public string? Portfolio { get; private init; }
+    public int WorkExperience { get; private init; }
+    
     private CandidateDocument(User user, int workExperience, string? portfolio)
     {
         ArgumentNullException.ThrowIfNull(user);
@@ -23,8 +27,4 @@ public sealed class CandidateDocument
         int workExperience,
         string? portfolio
     ) => new CandidateDocument(user, workExperience, portfolio);
-    
-    public string Name { get; private init; }
-    public string? Portfolio { get; private init; }
-    public int WorkExperience { get; private init; }
 }

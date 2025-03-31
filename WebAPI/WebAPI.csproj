@@ -8,8 +8,11 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="AutoMapper" Version="14.0.0" />
         <PackageReference Include="MediatR" Version="12.4.1" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.3" />
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.2"/>
+        <PackageReference Include="Riok.Mapperly" Version="4.2.0" />
     </ItemGroup>
 
     <ItemGroup>
@@ -19,7 +22,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Folder Include="Services\"/>
+        <Folder Include="Contracts\Responses\Vacancies\" />
     </ItemGroup>
 
     <ItemGroup>

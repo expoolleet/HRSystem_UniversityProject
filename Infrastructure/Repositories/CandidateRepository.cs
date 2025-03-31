@@ -35,6 +35,7 @@ public class CandidateRepository : ICandidateRepository
                 vacancy => vacancy.Id,
                 (candidate, vacancy) => new { Candidate = candidate, Vacancy = vacancy })
             .Where(cv => (!companyId.HasValue || cv.Vacancy.CompanyId == companyId) &&
+                         cv.Vacancy.Description != null &&
                          (string.IsNullOrEmpty(title) || cv.Vacancy.Description.Contains(title)))
             .Select(cv => cv.Candidate);
         

@@ -23,7 +23,6 @@ public class GetCandidateQueryHandler : IRequestHandler<GetCandidateQuery, Candi
         {
             throw new ApplicationException("Candidate not found");
         }
-        
         return candidate;
     }
 }

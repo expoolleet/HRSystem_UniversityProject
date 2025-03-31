@@ -22,6 +22,7 @@ public class UserBuilder : ISpecimenBuilder
 
         return User.Create(
             context.Create<Guid>(),
+            context.Create<Guid>(),
             context.Create<string>(),
             _password ?? context.Create<string>());
     }
