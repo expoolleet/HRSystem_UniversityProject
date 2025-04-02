@@ -1,6 +1,6 @@
 using Application.Context;
 using Application.Vacancies.Models.Queries;
-using Application.Vacancies.Repository;
+using Application.Vacancies.Repositories;
 using Domain.Vacancies;
 using MediatR;
 

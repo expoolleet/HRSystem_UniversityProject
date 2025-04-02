@@ -27,7 +27,7 @@ public class VacancyController : ControllerBase
         _mapper = mapper;
     }
 
-    [HttpPost]
+    [HttpPost("create")]
     public async Task<IActionResult> CreateVacancy(
         [FromBody] CreateVacancyRequest request, 
         CancellationToken cancellationToken)
@@ -46,7 +46,7 @@ public class VacancyController : ControllerBase
         return CreatedAtAction(nameof(CreateVacancy), new { id = result }, null);
     }
     
-    [HttpPut]
+    [HttpPut("edit")]
     public async Task<IActionResult> EditVacancy(
         [FromBody] EditVacancyRequest request, 
         CancellationToken cancellationToken)
@@ -107,7 +107,7 @@ public class VacancyController : ControllerBase
     }
     
     [AllowAnonymous]
-    [HttpPost]
+    [HttpPost("reply")]
     public async Task<IActionResult> ReplyVacancy(
         [FromBody] ReplyVacancyRequest request, 
         CancellationToken cancellationToken)

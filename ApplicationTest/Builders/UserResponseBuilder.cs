@@ -1,4 +1,4 @@
-using Application.Companies.Models.Response.Responses;
+using Application.Companies.Models.Responses;
 using Application.Companies.Models.Submodels;
 using AutoFixture;
 using AutoFixture.Kernel;

@@ -1,15 +1,14 @@
 using Application.Candidates.Handlers.CommandHandlers;
 using Application.Candidates.Models.Commands;
-using Application.Candidates.Repository;
+using Application.Candidates.Repositories;
 using Application.Companies.Handlers.CommandHandlers;
 using Application.Companies.Models.Commands;
-using Application.Companies.Models.Response.Responses;
 using Application.Companies.Models.Services;
 using Application.Companies.Models.Submodels;
 using Application.Companies.Repositories;
 using Application.Vacancies.Handlers.CommandHandlers;
 using Application.Vacancies.Models.Commands;
-using Application.Vacancies.Repository;
+using Application.Vacancies.Repositories;
 using ApplicationTest.Builders;
 using AutoFixture;
 using Domain.Candidates;
@@ -223,7 +222,7 @@ public class CommandHandlersTests
 
         _candidateRepositoryMock
             .Setup(
-                repo => repo.Add(
+                repo => repo.Create(
                     vacancy.CreateCandidate(command.Document, command.ReferalId),
                     It.IsAny<CancellationToken>()));
                     
@@ -235,7 +234,7 @@ public class CommandHandlersTests
         // Asset
         _candidateRepositoryMock
             .Verify(
-               repo => repo.Add(
+               repo => repo.Create(
                    It.Is<Candidate>(c =>
                        c.VacancyId == vacancy.Id &&
                        c.Document == command.Document &&

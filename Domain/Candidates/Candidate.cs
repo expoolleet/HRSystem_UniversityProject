@@ -4,7 +4,7 @@ namespace Domain.Candidates;
 
 public sealed class Candidate
 {
-    public Candidate(Guid id, Guid vacancyId, Guid? referralId, CandidateDocument document, CandidateWorkflow workflow)
+    private Candidate(Guid id, Guid vacancyId, Guid? referralId, CandidateDocument document, CandidateWorkflow workflow)
     {
         ArgumentNullException.ThrowIfNull(document);
         ArgumentNullException.ThrowIfNull(workflow);
@@ -15,6 +15,8 @@ public sealed class Candidate
         Workflow = workflow;
         Document = document;
     }
+    
+    private Candidate () { }
 
     public Guid Id { get; private init; }
     public Guid VacancyId { get; private init; }

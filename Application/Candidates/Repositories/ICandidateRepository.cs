@@ -1,10 +1,10 @@
 using Domain.Candidates;
 
-namespace Application.Candidates.Repository;
+namespace Application.Candidates.Repositories;
 
 public interface ICandidateRepository
 { 
-    Task Add(
+    Task Create(
         Candidate candidate,
         CancellationToken cancellationToken);
     

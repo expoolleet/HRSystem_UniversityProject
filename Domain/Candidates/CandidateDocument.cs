@@ -21,6 +21,8 @@ public sealed class CandidateDocument
         WorkExperience = workExperience;
         Portfolio = portfolio;
     }
+    
+    private CandidateDocument() { }
 
     public static CandidateDocument Create(
         User user,

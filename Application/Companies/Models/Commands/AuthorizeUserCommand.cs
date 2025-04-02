@@ -1,5 +1,4 @@
-using Application.Companies.Models.Response;
-using Application.Companies.Models.Response.Responses;
+using Application.Companies.Models.Responses;
 using Domain.Companies;
 using MediatR;
 

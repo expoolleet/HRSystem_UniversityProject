@@ -2,17 +2,17 @@ using Domain.Companies;
 
 namespace Application.Companies.Repositories;
 
-public interface IUserRepository
+public interface IRoleRepository
 {
     Task Create(
-        User user,
+        Role role,
         CancellationToken cancellationToken);
     
-    Task<User> Get(
-        Guid userId,
+    Task<Role> Get(
+        Guid id, 
         CancellationToken cancellationToken);
-
-    Task<User> Get(
-        string login,
+    
+    Task<Role> Get(
+        string name, 
         CancellationToken cancellationToken);
 }

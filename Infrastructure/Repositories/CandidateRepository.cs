@@ -1,4 +1,4 @@
-using Application.Candidates.Repository;
+using Application.Candidates.Repositories;
 using Domain.Candidates;
 using Infrastructure.DbContexts;
 using Microsoft.EntityFrameworkCore;
@@ -15,14 +15,14 @@ public class CandidateRepository : ICandidateRepository
         _dbContext = dbContext;
     }
 
-    public async Task Add(Candidate candidate, CancellationToken cancellationToken)
+    public async Task Create(Candidate candidate, CancellationToken cancellationToken)
     {
         await _dbContext.AddAsync(candidate, cancellationToken);
     }
 
     public async Task<Candidate> Get(Guid id, CancellationToken cancellationToken)
     {
-        var candidate = await _dbContext.FindAsync<Candidate>(id, cancellationToken);
+        var candidate = await _dbContext.Candidates.FirstOrDefaultAsync(c => c.Id == id, cancellationToken);
         return candidate!;
     }
 

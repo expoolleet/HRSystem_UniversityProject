@@ -1,6 +1,6 @@
 using Domain.Vacancies;
 
-namespace Application.Vacancies.Repository;
+namespace Application.Vacancies.Repositories;
 
 public interface IVacancyRepository
 {

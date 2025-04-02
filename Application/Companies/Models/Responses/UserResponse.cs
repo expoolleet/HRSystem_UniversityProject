@@ -1,6 +1,6 @@
 using Application.Companies.Models.Submodels;
 
-namespace Application.Companies.Models.Response.Responses;
+namespace Application.Companies.Models.Responses;
 
 public class UserResponse
 {

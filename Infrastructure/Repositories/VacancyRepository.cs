@@ -1,4 +1,4 @@
-using Application.Vacancies.Repository;
+using Application.Vacancies.Repositories;
 using Domain.Vacancies;
 using Infrastructure.DbContexts;
 using Microsoft.EntityFrameworkCore;

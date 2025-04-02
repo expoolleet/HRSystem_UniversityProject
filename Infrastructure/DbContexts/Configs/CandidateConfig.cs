@@ -16,6 +16,17 @@ public class CandidateConfig : IEntityTypeConfiguration<Candidate>
             .HasOne<Vacancy>()
             .WithMany()
             .HasForeignKey(c => c.VacancyId);
+        
+        builder
+            .OwnsOne(c => c.Document,
+                documentBuilder =>
+                {
+                    documentBuilder
+                        .WithOwner()
+                        .HasForeignKey("CandidateId");
+                    documentBuilder
+                        .HasKey("CandidateId");
+                });
 
         builder
             .OwnsOne(

@@ -1,6 +1,6 @@
-using Application.Candidates.Repository;
+using Application.Candidates.Repositories;
 using Application.Vacancies.Models.Commands;
-using Application.Vacancies.Repository;
+using Application.Vacancies.Repositories;
 using Domain.Candidates;
 using MediatR;
 
@@ -30,6 +30,6 @@ public class ReplyVacancyCommandHandler : IRequestHandler<ReplyVacancyCommand>
         
         var candidate = vacancy.CreateCandidate(request.Document, request.ReferalId);
 
-        await _candidateRepository.Add(candidate, cancellationToken);
+        await _candidateRepository.Create(candidate, cancellationToken);
     }
 }

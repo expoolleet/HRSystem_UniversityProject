@@ -1,5 +1,5 @@
 using Application.Vacancies.Models.Commands;
-using Application.Vacancies.Repository;
+using Application.Vacancies.Repositories;
 using Domain.Vacancies;
 using MediatR;
 
@@ -14,6 +14,7 @@ public class CreateVacancyCommandHandler : IRequestHandler<CreateVacancyCommand,
         ArgumentNullException.ThrowIfNull(vacancyRepository);
         _vacancyRepository = vacancyRepository;
     }
+    
     public async Task<Guid> Handle(CreateVacancyCommand request, CancellationToken cancellationToken)
     {
         var vacancy = Vacancy.Create(

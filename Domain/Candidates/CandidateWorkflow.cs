@@ -11,6 +11,8 @@ public sealed class CandidateWorkflow
         Steps = steps;
         CreationTime = DateTime.UtcNow;
     }
+    
+    private CandidateWorkflow() { }
 
     public IReadOnlyCollection<CandidateWorkflowStep> Steps { get; private init; }
     public DateTime CreationTime { get; private init; }

@@ -13,12 +13,12 @@ namespace WebApi.Controllers.Companies;
 [Authorize]
 [ApiController]
 [Route("api/[controller]")]
-public class UserController : ControllerBase
+public class CompanyController : ControllerBase
 {
     private readonly IMediator _mediator;
     private readonly IMapper _mapper;
 
-    public UserController(IMediator mediator, IMapper mapper)
+    public CompanyController(IMediator mediator, IMapper mapper)
     {
         ArgumentNullException.ThrowIfNull(mediator);
         ArgumentNullException.ThrowIfNull(mapper);
@@ -26,9 +26,9 @@ public class UserController : ControllerBase
         _mapper = mapper;
     }
 
-    [HttpPost]
-    public async Task<IActionResult> AddUser(
-        [FromQuery] AddUserRequest request,
+    [HttpPost("user/create")]
+    public async Task<IActionResult> CreateUser(
+        [FromBody] AddUserRequest request,
         CancellationToken cancellationToken)
     {
         if (!ModelState.IsValid)
@@ -46,9 +46,9 @@ public class UserController : ControllerBase
         return CreatedAtAction(nameof(GetUserById), new {id = result}, null);
     }
 
-    [HttpGet("{userId:guid}")]
+    [HttpGet("user/{userId:guid}")]
     public async Task<IActionResult> GetUserById(
-        Guid userId,
+        [FromRoute] Guid userId,
         CancellationToken cancellationToken)
     {
         var query = new GetUserByIdQuery
@@ -60,11 +60,30 @@ public class UserController : ControllerBase
         return Ok(userDto);
     }
     
-    [HttpPost]
+    [HttpGet("user")]
+    public async Task<IActionResult> GetUserByLogin(
+        [FromQuery] string login,
+        CancellationToken cancellationToken)
+    {
+        var query = new GetUserByLoginQuery
+        {
+            Login = login,
+        };
+        var result = await _mediator.Send(query, cancellationToken);
+        var userDto = _mapper.Map<UserDto>(result);
+        return Ok(userDto);
+    }
+    
+    [AllowAnonymous]
+    [HttpPost("authorize")]
     public async Task<IActionResult> AuthorizeUser(
         [FromBody] AuthUserRequest request, 
         CancellationToken cancellationToken)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
         var command = new AuthorizeUserCommand
         {
             Login = request.Login,
@@ -78,5 +97,31 @@ public class UserController : ControllerBase
             Token = _mapper.Map<TokenDto>(result.Token)
         };
         return Ok(response);
+    }
+
+    [HttpPost("create")]
+    public async Task<IActionResult> CreateCompany(
+        [FromRoute] string name,
+        CancellationToken cancellationToken)
+    {
+        var command = new CreateCompanyCommand
+        {
+            Name = name,
+        };
+        var result = await _mediator.Send(command, cancellationToken);
+        return Ok(result);
+    }
+    
+    [HttpPost("role/create")]
+    public async Task<IActionResult> CreateRole(
+        [FromRoute] string name,
+        CancellationToken cancellationToken)
+    {
+        var command = new CreateRoleCommand
+        {
+            Name = name,
+        };
+        var result = await _mediator.Send(command, cancellationToken);
+        return Ok(result);
     }
 }

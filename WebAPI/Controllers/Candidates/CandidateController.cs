@@ -23,7 +23,7 @@ public class CandidateController : ControllerBase
         _mediator = mediator;
     }
     
-    [HttpPost("{candidateId:guid}/approve")]
+    [HttpPost("approve/{candidateId:guid}")]
     public async Task<IActionResult> ApproveCandidate(
         [FromRoute] Guid candidateId,
         [FromBody] ApproveCandidateRequest request, 
@@ -47,7 +47,7 @@ public class CandidateController : ControllerBase
         return Ok(response);
     }
     
-    [HttpPost("{candidateId:guid}/reject")]
+    [HttpPost("reject/{candidateId:guid}")]
     public async Task<IActionResult> RejectCandidate(
         [FromRoute] Guid candidateId,
         [FromBody] RejectCandidateRequest request, 

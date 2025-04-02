@@ -4,6 +4,13 @@ namespace Domain.Candidates;
 
 public sealed class CandidateWorkflowStep
 {
+    public Guid? UserId { get; private init; }
+    public Guid? RoleId { get; private init; }
+    public int Number { get; private init; }
+    public CandidateStatus Status { get; private set; }
+    public string? Feedback { get; private set; }
+    public DateTime? FeedbackDate { get; private set; }
+    
     private CandidateWorkflowStep(
         Guid? userId,
         Guid? roleId,
@@ -24,13 +31,8 @@ public sealed class CandidateWorkflowStep
         Feedback = feedback;
         FeedbackDate = feedbackDate;
     }
-
-    public Guid? UserId { get; private init; }
-    public Guid? RoleId { get; private init; }
-    public int Number { get; private init; }
-    public CandidateStatus Status { get; private set; }
-    public string? Feedback { get; private set; }
-    public DateTime? FeedbackDate { get; private set; }
+    
+    private CandidateWorkflowStep() { }
 
     public static CandidateWorkflowStep Create(Guid? userId, Guid? roleId, int number)
         => new(

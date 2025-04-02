@@ -1,5 +1,5 @@
 using Application.Vacancies.Models.Commands;
-using Application.Vacancies.Repository;
+using Application.Vacancies.Repositories;
 using MediatR;
 
 namespace Application.Vacancies.Handlers.CommandHandlers;

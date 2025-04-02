@@ -16,11 +16,12 @@ public class UserContext : IUserContext
     }
     public async Task<Guid> GetUserId(CancellationToken cancellationToken)
     {
-        if (!(_httpContextAccessor.HttpContext?.User.Identity?.IsAuthenticated ?? false))
+        var httpContext = _httpContextAccessor.HttpContext;
+        if (httpContext?.User.Identity?.IsAuthenticated != true)
         {
             return Guid.Empty;
         }
-        var name = _httpContextAccessor.HttpContext.User.Identity.Name;
+        var name = httpContext.User.Identity.Name;
         var user = await _userRepository.Get(name!, cancellationToken);
         return user.Id;
     }

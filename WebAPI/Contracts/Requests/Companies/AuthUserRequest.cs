@@ -5,7 +5,6 @@ namespace WebApi.Contracts.Requests.Companies;
 public class AuthUserRequest
 {
     [Required]
-    [StringLength(50, MinimumLength = 8)]
     [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$",
         ErrorMessage = "Password need to be at least 8 characters long " +
                        "and must contain at least one upper case letter, " +
