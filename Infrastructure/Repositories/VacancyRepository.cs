@@ -17,21 +17,30 @@ public class VacancyRepository : IVacancyRepository
 
     public async Task Create(Vacancy vacancy, CancellationToken cancellationToken)
     {
+        bool exists = await _dbContext.Vacancies
+            .AnyAsync(v => v.Id == vacancy.Id, cancellationToken);
+
+        if (exists)
+        {
+            throw new InvalidOperationException($"Vacancy with Id {vacancy.Id} already exists.");
+        }
+
         await _dbContext.Vacancies.AddAsync(vacancy, cancellationToken);
+        await _dbContext.SaveChangesAsync(cancellationToken);
     }
     
-    public async Task<Vacancy> Get(Guid vacancyId, CancellationToken cancellationToken)
+    public async Task<Vacancy> Get(Guid id, CancellationToken cancellationToken)
     {
         var vacancy = await _dbContext.Vacancies
             .Include(v => v.Workflow)
-            .FirstAsync(v => v.Id == vacancyId, cancellationToken);
+            .FirstAsync(v => v.Id == id, cancellationToken);
         return vacancy;
     }
 
-    public async Task<Vacancy> GetShort(Guid vacancyId, CancellationToken cancellationToken)
+    public async Task<Vacancy> GetShort(Guid id, CancellationToken cancellationToken)
     {
         var vacancy = await _dbContext.Vacancies
-            .FindAsync(vacancyId, cancellationToken);
+            .FirstAsync(v => v.Id == id, cancellationToken);
         return vacancy!;
     }
 

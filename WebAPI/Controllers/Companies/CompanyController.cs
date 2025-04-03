@@ -25,10 +25,36 @@ public class CompanyController : ControllerBase
         _mediator = mediator;
         _mapper = mapper;
     }
+    
+    [HttpPost("create")]
+    public async Task<IActionResult> CreateCompany(
+        [FromRoute] string name,
+        CancellationToken cancellationToken)
+    {
+        var command = new CreateCompanyCommand
+        {
+            Name = name,
+        };
+        var result = await _mediator.Send(command, cancellationToken);
+        return Ok(result);
+    }
+    
+    [HttpPost("role/create")]
+    public async Task<IActionResult> CreateRole(
+        [FromRoute] string name,
+        CancellationToken cancellationToken)
+    {
+        var command = new CreateRoleCommand
+        {
+            Name = name,
+        };
+        var result = await _mediator.Send(command, cancellationToken);
+        return Ok(result);
+    }
 
     [HttpPost("user/create")]
     public async Task<IActionResult> CreateUser(
-        [FromBody] AddUserRequest request,
+        [FromForm] AddUserRequest request,
         CancellationToken cancellationToken)
     {
         if (!ModelState.IsValid)
@@ -60,9 +86,9 @@ public class CompanyController : ControllerBase
         return Ok(userDto);
     }
     
-    [HttpGet("user")]
+    [HttpGet("user/{login}")]
     public async Task<IActionResult> GetUserByLogin(
-        [FromQuery] string login,
+        [FromRoute] string login,
         CancellationToken cancellationToken)
     {
         var query = new GetUserByLoginQuery
@@ -77,7 +103,7 @@ public class CompanyController : ControllerBase
     [AllowAnonymous]
     [HttpPost("authorize")]
     public async Task<IActionResult> AuthorizeUser(
-        [FromBody] AuthUserRequest request, 
+        [FromForm] AuthUserRequest request, 
         CancellationToken cancellationToken)
     {
         if (!ModelState.IsValid)
@@ -97,31 +123,5 @@ public class CompanyController : ControllerBase
             Token = _mapper.Map<TokenDto>(result.Token)
         };
         return Ok(response);
-    }
-
-    [HttpPost("create")]
-    public async Task<IActionResult> CreateCompany(
-        [FromRoute] string name,
-        CancellationToken cancellationToken)
-    {
-        var command = new CreateCompanyCommand
-        {
-            Name = name,
-        };
-        var result = await _mediator.Send(command, cancellationToken);
-        return Ok(result);
-    }
-    
-    [HttpPost("role/create")]
-    public async Task<IActionResult> CreateRole(
-        [FromRoute] string name,
-        CancellationToken cancellationToken)
-    {
-        var command = new CreateRoleCommand
-        {
-            Name = name,
-        };
-        var result = await _mediator.Send(command, cancellationToken);
-        return Ok(result);
     }
 }

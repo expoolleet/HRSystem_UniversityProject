@@ -8,6 +8,6 @@ public class CandidateDocumentMappingProfile : Profile
 {
     public CandidateDocumentMappingProfile()
     {
-        CreateMap<CandidateDocument, CandidateDocumentDto>();
+        CreateMap<CandidateDocument, CandidateDocumentDto>().ReverseMap();
     }
 }

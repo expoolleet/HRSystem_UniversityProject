@@ -157,7 +157,7 @@ public class QueryHandlersTests
         
         _fixture.Customize<Vacancy>(
             _ => new VacancyBuilder(user, 1));
-        var query = _fixture.Create<GetVacancyQuery>();
+        var query = _fixture.Create<GetVacancyByIdQuery>();
         
         var vacancy = _fixture.Create<Vacancy>();
 
@@ -171,7 +171,7 @@ public class QueryHandlersTests
 
         _userContextMock.Setup(repo => repo.GetUserId(It.IsAny<CancellationToken>()));
 
-        var handler = new GetVacancyQueryHandler(
+        var handler = new GetVacancyByIdQueryHandler(
             _vacancyRepositories.Object, 
             _userContextMock.Object);
         

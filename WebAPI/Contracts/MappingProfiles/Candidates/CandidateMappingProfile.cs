@@ -8,6 +8,6 @@ public class CandidateMappingProfile : Profile
 {
     public CandidateMappingProfile()
     {
-        CreateMap<Candidate, CandidateDto>();
+        CreateMap<Candidate, CandidateDto>().ReverseMap();
     }
 }

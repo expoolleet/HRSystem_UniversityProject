@@ -8,6 +8,6 @@ public class TokenMappingProfile : Profile
 {
     public TokenMappingProfile()
     {
-        CreateMap<Token, TokenDto>();
+        CreateMap<Token, TokenDto>().ReverseMap();
     }
 }

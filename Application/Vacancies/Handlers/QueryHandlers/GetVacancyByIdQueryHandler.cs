@@ -6,12 +6,12 @@ using MediatR;
 
 namespace Application.Vacancies.Handlers.QueryHandlers;
 
-public class GetVacancyQueryHandler : IRequestHandler<GetVacancyQuery, Vacancy>
+public class GetVacancyByIdQueryHandler : IRequestHandler<GetVacancyByIdQuery, Vacancy>
 {
     private readonly IVacancyRepository _vacancyRepository;
     private readonly IUserContext _userContext;
     
-    public GetVacancyQueryHandler(IVacancyRepository vacancyRepository, IUserContext userContext)
+    public GetVacancyByIdQueryHandler(IVacancyRepository vacancyRepository, IUserContext userContext)
     {
         ArgumentNullException.ThrowIfNull(vacancyRepository);
         ArgumentNullException.ThrowIfNull(userContext);
@@ -19,7 +19,7 @@ public class GetVacancyQueryHandler : IRequestHandler<GetVacancyQuery, Vacancy>
         _userContext = userContext;
     }
     
-    public async Task<Vacancy> Handle(GetVacancyQuery request, CancellationToken cancellationToken)
+    public async Task<Vacancy> Handle(GetVacancyByIdQuery request, CancellationToken cancellationToken)
     {
         Vacancy vacancy;
         var userId = await _userContext.GetUserId(cancellationToken);

@@ -8,9 +8,9 @@ public class VacancyWorkflowMappingProfile : Profile
 {
     public VacancyWorkflowMappingProfile()
     {
-        CreateMap<VacancyWorkflowStepDto, VacancyWorkflowStep>();
+        CreateMap<VacancyWorkflowStepDto, VacancyWorkflowStep>().ReverseMap();
         CreateMap<VacancyWorkflowDto, VacancyWorkflow>()
             .ConstructUsing((src, context) => VacancyWorkflow.Create(
-                context.Mapper.Map<List<VacancyWorkflowStep>>(src.Steps)));
+                context.Mapper.Map<List<VacancyWorkflowStep>>(src.Steps))).ReverseMap();
     }
 }

@@ -26,7 +26,7 @@ public class CandidateController : ControllerBase
     [HttpPost("approve/{candidateId:guid}")]
     public async Task<IActionResult> ApproveCandidate(
         [FromRoute] Guid candidateId,
-        [FromBody] ApproveCandidateRequest request, 
+        [FromForm] ApproveCandidateRequest request, 
         CancellationToken cancellationToken)
     {
         if (!ModelState.IsValid)
@@ -50,7 +50,7 @@ public class CandidateController : ControllerBase
     [HttpPost("reject/{candidateId:guid}")]
     public async Task<IActionResult> RejectCandidate(
         [FromRoute] Guid candidateId,
-        [FromBody] RejectCandidateRequest request, 
+        [FromForm] RejectCandidateRequest request, 
         CancellationToken cancellationToken)
     {
         if (!ModelState.IsValid)
@@ -86,7 +86,7 @@ public class CandidateController : ControllerBase
     
     [HttpGet]
     public async Task<IActionResult> GetCandidatesByFilter(
-        [FromQuery] GetCandidatesByFilterRequest request, 
+        [FromForm] GetCandidatesByFilterRequest request, 
         CancellationToken cancellationToken)
     {
         if (!ModelState.IsValid)

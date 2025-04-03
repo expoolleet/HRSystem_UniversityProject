@@ -7,6 +7,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Contracts.Dto.Candidates;
+using WebApi.Contracts.Dto.Vacancies;
 using WebApi.Contracts.Requests.Vacancies;
 
 namespace WebApi.Controllers.Vacancies;
@@ -29,7 +30,7 @@ public class VacancyController : ControllerBase
 
     [HttpPost("create")]
     public async Task<IActionResult> CreateVacancy(
-        [FromBody] CreateVacancyRequest request, 
+        [FromForm] CreateVacancyRequest request, 
         CancellationToken cancellationToken)
     {
         if (!ModelState.IsValid)
@@ -43,19 +44,20 @@ public class VacancyController : ControllerBase
             Workflow = _mapper.Map<VacancyWorkflow>(request.Workflow)
         };
         var result = await _mediator.Send(command, cancellationToken);
-        return CreatedAtAction(nameof(CreateVacancy), new { id = result }, null);
+        return Ok(result);
+        //return CreatedAtAction(nameof(CreateVacancy), new { id = result }, null);
     }
     
     [HttpPut("edit")]
     public async Task<IActionResult> EditVacancy(
-        [FromBody] EditVacancyRequest request, 
+        [FromForm] EditVacancyRequest request, 
         CancellationToken cancellationToken)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
-        var query = new GetVacancyQuery
+        var query = new GetVacancyByIdQuery
         {
             VacancyId = request.VacancyId,
         };
@@ -72,7 +74,7 @@ public class VacancyController : ControllerBase
     [AllowAnonymous]
     [HttpGet]
     public async Task<IActionResult> GetVacanciesByFilter(
-        [FromBody] GetVacancyByFilterRequest request, 
+        [FromForm] GetVacancyByFilterRequest request, 
         CancellationToken cancellationToken)
     {
         if (!ModelState.IsValid)
@@ -98,18 +100,19 @@ public class VacancyController : ControllerBase
         {
             return BadRequest(ModelState);
         }
-        var query = new GetVacancyQuery
+        var query = new GetVacancyByIdQuery
         {
             VacancyId = vacancyId
         };
         var result = await _mediator.Send(query, cancellationToken);
-        return Ok(result);
+        var vacancy = _mapper.Map<VacancyDto>(result);
+        return Ok(vacancy);
     }
     
     [AllowAnonymous]
     [HttpPost("reply")]
     public async Task<IActionResult> ReplyVacancy(
-        [FromBody] ReplyVacancyRequest request, 
+        [FromForm] ReplyVacancyRequest request, 
         CancellationToken cancellationToken)
     {
         if (!ModelState.IsValid)
