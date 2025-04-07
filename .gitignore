@@ -1,5 +1,16 @@
-# Created by https://www.toptal.com/developers/gitignore/api/rider,visualstudio
-# Edit at https://www.toptal.com/developers/gitignore?templates=rider,visualstudio
+# Created by https://www.toptal.com/developers/gitignore/api/visualstudio,rider,database
+# Edit at https://www.toptal.com/developers/gitignore?templates=visualstudio,rider,database
+
+### Database ###
+*.accdb
+*.db
+*.dbf
+*.mdb
+*.pdb
+*.sqlite3
+*.db-shm
+*.db-wal
+#**/Migrations/*
 
 ### Rider ###
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio, WebStorm and Rider
@@ -160,7 +171,6 @@ StyleCopReport.xml
 *.obj
 *.iobj
 *.pch
-*.pdb
 *.ipdb
 *.pgc
 *.pgd
@@ -481,4 +491,4 @@ FodyWeavers.xsd
 ### VisualStudio Patch ###
 # Additional files built by Visual Studio
 
-# End of https://www.toptal.com/developers/gitignore/api/rider,visualstudio
+# End of https://www.toptal.com/developers/gitignore/api/visualstudio,rider,database

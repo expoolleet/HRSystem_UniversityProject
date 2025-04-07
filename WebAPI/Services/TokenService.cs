@@ -12,11 +12,15 @@ public class TokenService : ITokenService
 {
     private const int ExpiresDays = 30;
     
-    public Token GenerateToken(User user)
+    public Token GenerateToken(User user, Role role)
     {
         var expiresData = DateTime.Now.AddDays(ExpiresDays);
         
-        var claims = new List<Claim> {new Claim(ClaimTypes.Name, user.Name)};
+        var claims = new List<Claim>
+        {
+            new Claim(ClaimTypes.Name, user.Name),
+            new Claim(ClaimTypes.Role, role.Name)
+        };
         
         var jwt = new JwtSecurityToken(
             issuer: AuthOptions.Issuer, 

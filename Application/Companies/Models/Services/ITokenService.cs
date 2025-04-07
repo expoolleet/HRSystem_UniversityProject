@@ -5,5 +5,5 @@ namespace Application.Companies.Models.Services;
 
 public interface ITokenService
 {
-    Token GenerateToken(User user);
+    Token GenerateToken(User user, Role role);
 }

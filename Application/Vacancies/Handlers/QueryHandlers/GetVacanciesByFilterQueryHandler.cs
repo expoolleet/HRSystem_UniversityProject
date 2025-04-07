@@ -1,4 +1,4 @@
-using Application.Context;
+using Application.Contexts;
 using Application.Vacancies.Models.Queries;
 using Application.Vacancies.Repositories;
 using Domain.Vacancies;
@@ -23,15 +23,15 @@ public class GetVacanciesByFilterQueryHandler : IRequestHandler<GetVacanciesByFi
     public async Task<IReadOnlyCollection<Vacancy>> Handle(GetVacanciesByFilterQuery request, CancellationToken cancellationToken)
     {
         var userId = await _userContext.GetUserId(cancellationToken);
-        if (userId == Guid.Empty)
+        if (userId == null)
         {
             return await _vacancyRepository.GetShortCollectionByFilter(
-                request.CompnayId, 
+                request.CompanyId, 
                 request.Title, 
                 cancellationToken);
         }
         return await _vacancyRepository.GetCollectionByFilter(
-            request.CompnayId, 
+            request.CompanyId, 
             request.Title, 
             cancellationToken);
     }

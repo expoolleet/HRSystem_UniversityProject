@@ -17,6 +17,7 @@ public class RoleRepository : IRoleRepository
     public async Task Create(Role role, CancellationToken cancellationToken)
     {
         await _dbContext.Roles.AddAsync(role, cancellationToken);
+        await _dbContext.SaveChangesAsync(cancellationToken);
     }
 
     public async Task<Role> Get(Guid id, CancellationToken cancellationToken)

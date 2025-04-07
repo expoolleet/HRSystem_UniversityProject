@@ -9,13 +9,16 @@
     public class AuthorizeUserCommandHandler : IRequestHandler<AuthorizeUserCommand, UserResponse>
     {
         private readonly IUserRepository _userRepository;
+        private readonly IRoleRepository _roleRepository;
         private readonly ITokenService _tokenService;
-        public AuthorizeUserCommandHandler(IUserRepository userRepository, ITokenService tokenService)
+        public AuthorizeUserCommandHandler(IUserRepository userRepository, IRoleRepository roleRepository, ITokenService tokenService)
         {
             ArgumentNullException.ThrowIfNull(userRepository);
             ArgumentNullException.ThrowIfNull(tokenService);
+            ArgumentNullException.ThrowIfNull(roleRepository);
             _userRepository = userRepository;
             _tokenService = tokenService;
+            _roleRepository = roleRepository;
         }
             
         public async Task<UserResponse> Handle(AuthorizeUserCommand request, CancellationToken cancellationToken)
@@ -38,8 +41,10 @@
             { 
                 throw new OperationCanceledException("Invalid password");
             }
-            var token = _tokenService.GenerateToken(user);
-
-            return UserResponse.Create(user.Id, "User", user.RoleId, token);
+            var role = await _roleRepository.Get(user.RoleId, cancellationToken);
+            
+            var token = _tokenService.GenerateToken(user, role);
+            
+            return UserResponse.Create(user.Id, role, token);
         }
     }

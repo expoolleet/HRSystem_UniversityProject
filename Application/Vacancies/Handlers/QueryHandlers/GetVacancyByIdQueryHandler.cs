@@ -1,4 +1,4 @@
-using Application.Context;
+using Application.Contexts;
 using Application.Vacancies.Models.Queries;
 using Application.Vacancies.Repositories;
 using Domain.Vacancies;
@@ -23,7 +23,7 @@ public class GetVacancyByIdQueryHandler : IRequestHandler<GetVacancyByIdQuery, V
     {
         Vacancy vacancy;
         var userId = await _userContext.GetUserId(cancellationToken);
-        if (userId == Guid.Empty)
+        if (userId == null)
         {
             vacancy = await _vacancyRepository.GetShort(request.VacancyId, cancellationToken);
         }

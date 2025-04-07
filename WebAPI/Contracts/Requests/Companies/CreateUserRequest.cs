@@ -2,13 +2,10 @@ using System.ComponentModel.DataAnnotations;
 
 namespace WebApi.Contracts.Requests.Companies;
 
-public class AddUserRequest
+public class CreateUserRequest
 {
     [Required]
     public Guid RoleId { get; set; }
-    
-    [Required]
-    public Guid CompanyId { get; set; } 
     
     [Required]
     [StringLength(50, MinimumLength = 8)]

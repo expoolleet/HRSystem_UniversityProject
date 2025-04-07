@@ -1,4 +1,5 @@
 using Application.Companies.Models.Submodels;
+using Domain.Companies;
 
 namespace Application.Companies.Models.Responses;
 
@@ -15,6 +16,6 @@ public class UserResponse
         Token = token;
     }
 
-    public static UserResponse Create(Guid userId, string roleName, Guid roleId, Token token)
-        => new(userId, Role.Create(roleId, roleName), token);
+    public static UserResponse Create(Guid userId, Role role, Token token)
+        => new(userId, role, token);
 }

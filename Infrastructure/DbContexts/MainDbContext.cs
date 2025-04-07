@@ -3,7 +3,6 @@ using Domain.Candidates;
 using Domain.Companies;
 using Domain.Vacancies;
 using Infrastructure.DbContexts.Configs;
-using Microsoft.Data.Sqlite;
 
 namespace Infrastructure.DbContexts;
 
@@ -20,9 +19,5 @@ public class MainDbContext(DbContextOptions<MainDbContext> options) : DbContext(
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(UserConfig).Assembly);
-    }
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        optionsBuilder.UseSqlite("Data Source=app.db");
     }
 }

@@ -18,6 +18,7 @@ public class CandidateRepository : ICandidateRepository
     public async Task Create(Candidate candidate, CancellationToken cancellationToken)
     {
         await _dbContext.AddAsync(candidate, cancellationToken);
+        await _dbContext.SaveChangesAsync(cancellationToken);
     }
 
     public async Task<Candidate> Get(Guid id, CancellationToken cancellationToken)

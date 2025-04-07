@@ -9,7 +9,8 @@ public static class DbContextExtension
     {
         var connectionString = configuration.GetConnectionString("DefaultConnection");
         services.AddDbContext<MainDbContext>(optionsBuilder 
-            => optionsBuilder.UseSqlite(connectionString));
+            => optionsBuilder.UseSqlite(connectionString,
+                x => x.MigrationsAssembly("Infrastructure")));
         return services;
     }
 }

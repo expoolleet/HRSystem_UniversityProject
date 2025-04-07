@@ -1,5 +1,5 @@
 using Application.Companies.Repositories;
-using Application.Context;
+using Application.Contexts;
 
 namespace WebApi.Services;
 
@@ -14,12 +14,12 @@ public class UserContext : IUserContext
         _httpContextAccessor = httpContextAccessor;
         _userRepository = userRepository;
     }
-    public async Task<Guid> GetUserId(CancellationToken cancellationToken)
+    public async Task<Guid?> GetUserId(CancellationToken cancellationToken)
     {
         var httpContext = _httpContextAccessor.HttpContext;
         if (httpContext?.User.Identity?.IsAuthenticated != true)
         {
-            return Guid.Empty;
+            return null;
         }
         var name = httpContext.User.Identity.Name;
         var user = await _userRepository.Get(name!, cancellationToken);

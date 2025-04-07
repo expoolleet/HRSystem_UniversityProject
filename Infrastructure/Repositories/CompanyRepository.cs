@@ -17,6 +17,7 @@ public class CompanyRepository : ICompanyRepository
     public async Task Create(Company company, CancellationToken cancellationToken)
     {
         await _dbContext.Companies.AddAsync(company, cancellationToken);
+        await _dbContext.SaveChangesAsync(cancellationToken);
     }
 
     public async Task<Company> Get(Guid id, CancellationToken cancellationToken)

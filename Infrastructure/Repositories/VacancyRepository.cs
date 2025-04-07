@@ -17,14 +17,6 @@ public class VacancyRepository : IVacancyRepository
 
     public async Task Create(Vacancy vacancy, CancellationToken cancellationToken)
     {
-        bool exists = await _dbContext.Vacancies
-            .AnyAsync(v => v.Id == vacancy.Id, cancellationToken);
-
-        if (exists)
-        {
-            throw new InvalidOperationException($"Vacancy with Id {vacancy.Id} already exists.");
-        }
-
         await _dbContext.Vacancies.AddAsync(vacancy, cancellationToken);
         await _dbContext.SaveChangesAsync(cancellationToken);
     }

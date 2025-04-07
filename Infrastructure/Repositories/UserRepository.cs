@@ -17,6 +17,7 @@ public class UserRepository : IUserRepository
     public async Task Create(User user, CancellationToken cancellationToken)
     {
         await _dbContext.Users.AddAsync(user, cancellationToken);
+        await _dbContext.SaveChangesAsync(cancellationToken);
     }
 
     public async Task<User> Get(Guid userId, CancellationToken cancellationToken)

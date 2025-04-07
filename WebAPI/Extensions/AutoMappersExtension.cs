@@ -14,6 +14,7 @@ public static class AutoMappersExtension
         services.AddAutoMapper(typeof(UserMappingProfile));
         services.AddAutoMapper(typeof(RoleMappingProfile));
         services.AddAutoMapper(typeof(TokenMappingProfile));
+        services.AddAutoMapper(typeof(UserResponseMappingProfile));
         
         services.AddAutoMapper(typeof(VacancyMappingProfile));
         services.AddAutoMapper(typeof(VacancyWorkflowMappingProfile));

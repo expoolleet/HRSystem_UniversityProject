@@ -28,6 +28,7 @@ public class CommandHandlersTests
     private Mock<IVacancyRepository> _vacancyRepositoryMock;
     private Mock<ICandidateRepository> _candidateRepositoryMock;
     private Mock<ITokenService> _tokenServiceMock;
+    private Mock<IRoleRepository> _roleRepositoryMock;
 
     [SetUp]
     public void Setup()
@@ -37,6 +38,7 @@ public class CommandHandlersTests
         _vacancyRepositoryMock = new Mock<IVacancyRepository>();
         _candidateRepositoryMock = new Mock<ICandidateRepository>();
         _tokenServiceMock = new Mock<ITokenService>();
+        _roleRepositoryMock = new Mock<IRoleRepository>();
     }
 
     [Test]
@@ -86,12 +88,28 @@ public class CommandHandlersTests
         
         var token = _fixture.Create<Token>();
         
+        _fixture.Customize<Role>(_ => new RoleBuilder());
+        var role = _fixture.Create<Role>();
+        _roleRepositoryMock
+            .Setup(
+                repository => repository.Get(
+                    user.RoleId,
+                    It.IsAny<CancellationToken>()))
+            .ReturnsAsync(role);
+
         _tokenServiceMock
             .Setup(
                 service => service.GenerateToken(
-                    user))
+                    user, 
+                    role))
             .Returns(token);
-        var handler = new AuthorizeUserCommandHandler(_userRepositoryMock.Object, _tokenServiceMock.Object);
+        
+
+        
+        var handler = new AuthorizeUserCommandHandler(
+            _userRepositoryMock.Object, 
+            _roleRepositoryMock.Object, 
+            _tokenServiceMock.Object);
 
         // Act
         var result = await handler.Handle(command, CancellationToken.None);

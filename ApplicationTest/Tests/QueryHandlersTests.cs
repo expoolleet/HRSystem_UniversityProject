@@ -1,7 +1,7 @@
 using Application.Candidates.Handlers.QueryHandlers;
 using Application.Candidates.Models.Queries;
 using Application.Candidates.Repositories;
-using Application.Context;
+using Application.Contexts;
 using Application.Vacancies.Handlers.QueryHandlers;
 using Application.Vacancies.Models.Queries;
 using Application.Vacancies.Repositories;
@@ -122,7 +122,7 @@ public class QueryHandlersTests
         _vacancyRepositories
             .Setup(
             repo => repo.GetCollectionByFilter(
-                query.CompnayId,
+                query.CompanyId,
                 query.Title,
                 It.IsAny<CancellationToken>()
             ))
@@ -142,7 +142,7 @@ public class QueryHandlersTests
         result.Should().BeEquivalentTo(vacancies);
         _vacancyRepositories.Verify(
             repo => repo.GetCollectionByFilter(
-                query.CompnayId,
+                query.CompanyId,
                 query.Title,
                 It.IsAny<CancellationToken>()),
             Times.Once);
