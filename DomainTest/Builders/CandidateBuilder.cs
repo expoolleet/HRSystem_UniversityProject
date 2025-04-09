@@ -38,7 +38,7 @@ public class CandidateBuilder : ISpecimenBuilder
         var workflow = CandidateWorkflow.Create(steps);
 
         var document = CandidateDocument.Create(
-            _user,
+            context.Create<string>(),
             context.Create<int>(),
             context.Create<string>());
         

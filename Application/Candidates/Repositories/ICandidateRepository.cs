@@ -18,4 +18,5 @@ public interface ICandidateRepository
         int page,
         int pageSize,
         CancellationToken cancellationToken);
+    Task SaveChangesAsync();
 }

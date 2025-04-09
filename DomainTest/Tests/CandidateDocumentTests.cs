@@ -37,10 +37,10 @@ public class CandidateDocumentTests
     public void CreateDocumentWithNullUser()
     {
         // Act && Assert
-        Assert.Throws<ArgumentNullException>(() =>
+        Assert.Throws<ArgumentException>(() =>
         {
             CandidateDocument.Create(
-                null!, 
+                "", 
                 _fixture.Create<int>(), 
                 _fixture.Create<string>());
         });
@@ -56,7 +56,7 @@ public class CandidateDocumentTests
         // Act
         Exception exception = Assert.Throws<Exception>(() =>
         {
-            CandidateDocument.Create(user, -1, _fixture.Create<string>());
+            CandidateDocument.Create(_fixture.Create<string>(), -1, _fixture.Create<string>());
         });
 
         // Assert

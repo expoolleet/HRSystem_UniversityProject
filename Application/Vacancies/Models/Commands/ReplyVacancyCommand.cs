@@ -5,7 +5,7 @@ namespace Application.Vacancies.Models.Commands;
 
 public class ReplyVacancyCommand : IRequest
 {
-    public Guid VacancyId { get; set; }
-    public Guid? ReferalId { get; set; }
-    public required CandidateDocument Document { get; set; }
+    public Guid VacancyId { get; init; }
+    public Guid? ReferalId { get; init; }
+    public required CandidateDocument Document { get; init; }
 }

@@ -22,6 +22,7 @@ public static class AuthenticationExtension
                     ValidateIssuerSigningKey = true,
                 };
             });
+        
         return services;
     }
 }

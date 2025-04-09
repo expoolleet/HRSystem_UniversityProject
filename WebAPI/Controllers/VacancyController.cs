@@ -46,14 +46,44 @@ public class VacancyController : ControllerBase
         {
             VacancyId = vacancyId
         };
-        var result = await _mediator.Send(query, cancellationToken);
-        var vacancy = _mapper.Map<VacancyDto>(result);
-        return Ok(vacancy);
+        var result =  _mediator.Send(query, cancellationToken);
+        var userId =  _userContext.GetUserId(cancellationToken);
+        Task.WaitAll(result, userId);
+        if (userId.Result == Guid.Empty)
+        {
+            return Ok(_mapper.Map<VacancyShortDto>(result.Result));
+        }
+        return Ok(_mapper.Map<VacancyDto>(result.Result));
+    }
+    
+    [AllowAnonymous]
+    [HttpGet]
+    public async Task<IActionResult> GetVacanciesByFilter(
+        [FromQuery] GetVacancyByFilterRequest request, 
+        CancellationToken cancellationToken)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+        var query = new GetVacanciesByFilterQuery
+        {
+            CompanyId = request.CompanyId,
+            Title = request.Title,
+        };
+        var result =  _mediator.Send(query, cancellationToken);
+        var userId = _userContext.GetUserId(cancellationToken);
+        Task.WaitAll(result, userId);
+        if (userId.Result == Guid.Empty)
+        {
+            return Ok(_mapper.Map<List<VacancyShortDto>>(result.Result));
+        }
+        return Ok(_mapper.Map<List<VacancyDto>>(result.Result));
     }
 
     [HttpPost]
     public async Task<IActionResult> CreateVacancy(
-        [FromForm] CreateVacancyRequest request, 
+        [FromBody] CreateVacancyRequest request, 
         CancellationToken cancellationToken)
     {
         if (!ModelState.IsValid)
@@ -73,7 +103,7 @@ public class VacancyController : ControllerBase
     [HttpPut("{vacancyId:guid}")]
     public async Task<IActionResult> EditVacancy(
         [FromRoute] Guid vacancyId,
-        [FromForm] EditVacancyRequest request, 
+        [FromBody] EditVacancyRequest request, 
         CancellationToken cancellationToken)
     {
         if (!ModelState.IsValid)
@@ -94,24 +124,6 @@ public class VacancyController : ControllerBase
         return Ok(command.Vacancy.Id);
     }
     
-    [AllowAnonymous]
-    [HttpGet]
-    public async Task<IActionResult> GetVacanciesByFilter(
-        [FromQuery] GetVacancyByFilterRequest request, 
-        CancellationToken cancellationToken)
-    {
-        if (!ModelState.IsValid)
-        {
-            return BadRequest(ModelState);
-        }
-        var query = new GetVacanciesByFilterQuery
-        {
-            CompanyId = request.CompanyId,
-            Title = request.Title,
-        };
-        var result = await _mediator.Send(query, cancellationToken);
-        return Ok(result);
-    }
     
     [AllowAnonymous]
     [HttpPost("{vacancyId:guid}/reply")]
@@ -124,17 +136,11 @@ public class VacancyController : ControllerBase
         {
             return BadRequest(ModelState);
         }
-        var documentDto = new CandidateDocumentDto
-        {
-            Name = request.Name,
-            Portfolio = request.Portfolio,
-            WorkExperience = request.WorkExperience,
-        };
         var command = new ReplyVacancyCommand
         {
             VacancyId = vacancyId,
             ReferalId = await _userContext.GetUserId(cancellationToken),
-            Document = _mapper.Map<CandidateDocument>(documentDto),
+            Document = _mapper.Map<CandidateDocument>(request),
         };
         await _mediator.Send(command, cancellationToken);
         return Ok(command.VacancyId);

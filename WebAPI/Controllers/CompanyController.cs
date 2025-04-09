@@ -39,6 +39,34 @@ public class CompanyController : ControllerBase
         return Ok(userDto);
     }
     
+    [HttpGet("roles/{roleId:guid}")]
+    public async Task<IActionResult> GetRoleById(
+        [FromRoute] Guid roleId,
+        CancellationToken cancellationToken)
+    {
+        var query = new GetRoleByIdQuery
+        {
+            Id = roleId,
+        };
+        var result = await _mediator.Send(query, cancellationToken);
+        var userDto = _mapper.Map<RoleDto>(result);
+        return Ok(userDto);
+    }
+    
+    [HttpGet("{companyId:guid}")]
+    public async Task<IActionResult> GetCompanyById(
+        [FromRoute] Guid companyId,
+        CancellationToken cancellationToken)
+    {
+        var query = new GetCompanyByIdQuery
+        {
+            Id = companyId,
+        };
+        var result = await _mediator.Send(query, cancellationToken);
+        var userDto = _mapper.Map<CompanyDto>(result);
+        return Ok(userDto);
+    }
+    
     [HttpGet("users/{name}")]
     public async Task<IActionResult> GetUserByName(
         [FromRoute] string name,
@@ -53,7 +81,7 @@ public class CompanyController : ControllerBase
         return Ok(userDto);
     }
     
-    [HttpPost]
+    [HttpPost("{name}")]
     public async Task<IActionResult> CreateCompany(
         [FromRoute] string name,
         CancellationToken cancellationToken)
@@ -63,7 +91,7 @@ public class CompanyController : ControllerBase
             Name = name,
         };
         var result = await _mediator.Send(command, cancellationToken);
-        return Ok(result);
+        return CreatedAtAction(nameof(GetCompanyById), new {companyId = result}, null);
     }
     
     [HttpPost("roles/{name}")]
@@ -76,7 +104,7 @@ public class CompanyController : ControllerBase
             Name = name,
         };
         var result = await _mediator.Send(command, cancellationToken);
-        return Ok(result);
+        return CreatedAtAction(nameof(GetRoleById), new {roleId = result}, null);
     }
 
     [HttpPost("{companyId:guid}/users")]

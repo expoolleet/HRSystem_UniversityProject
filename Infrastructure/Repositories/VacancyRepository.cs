@@ -24,16 +24,8 @@ public class VacancyRepository : IVacancyRepository
     public async Task<Vacancy> Get(Guid id, CancellationToken cancellationToken)
     {
         var vacancy = await _dbContext.Vacancies
-            .Include(v => v.Workflow)
             .FirstAsync(v => v.Id == id, cancellationToken);
         return vacancy;
-    }
-
-    public async Task<Vacancy> GetShort(Guid id, CancellationToken cancellationToken)
-    {
-        var vacancy = await _dbContext.Vacancies
-            .FirstAsync(v => v.Id == id, cancellationToken);
-        return vacancy!;
     }
 
     public async Task Edit(Vacancy vacancy, string? description, CancellationToken cancellationToken)
@@ -42,11 +34,11 @@ public class VacancyRepository : IVacancyRepository
 
         if (trackedVacancy != null)
         {
-            trackedVacancy.Description = description;
+            trackedVacancy.Edit(description);
         }
         else
         {
-            vacancy.Description = description;
+            vacancy.Edit(description);
             _dbContext.Attach(vacancy);
             _dbContext.Entry(vacancy).State = EntityState.Modified;
         }
@@ -55,29 +47,15 @@ public class VacancyRepository : IVacancyRepository
         
     public async Task<IReadOnlyCollection<Vacancy>> GetCollectionByFilter(Guid? companyId, string? title, CancellationToken cancellationToken)
     {
-        IQueryable<Vacancy> query = _dbContext.Vacancies;
+        IQueryable<Vacancy> query = _dbContext.Vacancies
+            .AsNoTracking();
         if (companyId.HasValue)
         {
             query = query.Where(v => v.CompanyId == companyId);
         }
         if (!string.IsNullOrEmpty(title))
         {
-            query = query.Where(v => v.Description != null && v.Description.Contains(title));
-        }
-        query.Include(v => v.Workflow);
-        return await query.ToListAsync(cancellationToken);
-    }
-    
-    public async Task<IReadOnlyCollection<Vacancy>> GetShortCollectionByFilter(Guid? companyId, string? title, CancellationToken cancellationToken)
-    {
-        IQueryable<Vacancy> query = _dbContext.Vacancies;
-        if (companyId.HasValue)
-        {
-            query = query.Where(v => v.CompanyId == companyId);
-        }
-        if (!string.IsNullOrEmpty(title))
-        {
-            query = query.Where(v => v.Description != null && v.Description.Contains(title));
+            query = query.Where(v => v.Description != null && v.Description.ToLower().Contains(title.ToLower()));
         }
         return await query.ToListAsync(cancellationToken);
     }

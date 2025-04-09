@@ -15,11 +15,7 @@ public class CandidateDocumentBuilder : ISpecimenBuilder
         }
 
         return CandidateDocument.Create(
-            User.Create(
-                context.Create<Guid>(), 
-                context.Create<Guid>(),
-                context.Create<string>(),
-                context.Create<string>()),
+            context.Create<string>(),
             Math.Abs(context.Create<int>()),
             context.Create<string>());
     }

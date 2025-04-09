@@ -6,14 +6,11 @@ public sealed class Vacancy
 {
     public Guid Id { get; private init; }
     public Guid CompanyId { get; private init; }
-    public string? Description { get;  set; }
-    public VacancyWorkflow Workflow { get; private init; }
+    public string? Description { get; private set; }
+    public VacancyWorkflow? Workflow { get; private init; }
     
     private Vacancy(Guid id, Guid companyId, string? description, VacancyWorkflow? workflow)
     {
-        ArgumentException.ThrowIfNullOrEmpty(description);
-        ArgumentNullException.ThrowIfNull(workflow);
-        
         Id = id;
         CompanyId = companyId;
         Description = description;
@@ -33,7 +30,7 @@ public sealed class Vacancy
     {
         ArgumentException.ThrowIfNullOrEmpty(description);
         
-        this.Description = description;
+        Description = description;
     }
     
     public Candidate CreateCandidate(CandidateDocument candidateDocument, Guid? referralId)

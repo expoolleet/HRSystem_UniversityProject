@@ -2,5 +2,5 @@ namespace Application.Contexts;
 
 public interface IUserContext
 {
-    Task<Guid?> GetUserId(CancellationToken cancellationToken);
+    Task<Guid> GetUserId(CancellationToken cancellationToken);
 }

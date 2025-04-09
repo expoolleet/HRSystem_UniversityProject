@@ -8,8 +8,9 @@ public class ReplyVacancyRequest
     [MaxLength(30)]
     public required string Name { get; init; }
     
+    [Required]
     [MaxLength(100)]
-    public string? Portfolio { get; init; }
+    public required string Portfolio { get; init; }
     
     [Required]
     public int WorkExperience { get; init; }

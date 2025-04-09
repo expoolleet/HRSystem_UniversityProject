@@ -36,5 +36,6 @@ public class ApproveCandidateCommandHandler : IRequestHandler<ApproveCandidateCo
         }
         
         candidate.Result.Approve(user.Result, request.Feedback);
+        await _candidateRepository.SaveChangesAsync();
     }
 }

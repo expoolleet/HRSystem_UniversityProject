@@ -22,14 +22,6 @@ public class GetVacanciesByFilterQueryHandler : IRequestHandler<GetVacanciesByFi
     
     public async Task<IReadOnlyCollection<Vacancy>> Handle(GetVacanciesByFilterQuery request, CancellationToken cancellationToken)
     {
-        var userId = await _userContext.GetUserId(cancellationToken);
-        if (userId == null)
-        {
-            return await _vacancyRepository.GetShortCollectionByFilter(
-                request.CompanyId, 
-                request.Title, 
-                cancellationToken);
-        }
         return await _vacancyRepository.GetCollectionByFilter(
             request.CompanyId, 
             request.Title, 

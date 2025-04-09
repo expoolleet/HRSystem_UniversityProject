@@ -36,5 +36,6 @@ public class RejectCandidateCommandHandler : IRequestHandler<RejectCandidateComm
         }
         
         candidate.Result.Reject(user.Result, request.Feedback);
+        await _candidateRepository.SaveChangesAsync();
     }
 }

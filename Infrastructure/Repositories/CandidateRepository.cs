@@ -37,7 +37,7 @@ public class CandidateRepository : ICandidateRepository
                 (candidate, vacancy) => new { Candidate = candidate, Vacancy = vacancy })
             .Where(cv => (!companyId.HasValue || cv.Vacancy.CompanyId == companyId) &&
                          cv.Vacancy.Description != null &&
-                         (string.IsNullOrEmpty(title) || cv.Vacancy.Description.Contains(title)))
+                         (string.IsNullOrEmpty(title) || cv.Vacancy.Description.ToLower().Contains(title.ToLower())))
             .Select(cv => cv.Candidate);
         
         var candidates = await query
@@ -45,5 +45,10 @@ public class CandidateRepository : ICandidateRepository
             .Take(pageSize)
             .ToListAsync(cancellationToken);
         return candidates;
+    }
+
+    public async Task SaveChangesAsync()
+    {
+        await _dbContext.SaveChangesAsync();
     }
 }

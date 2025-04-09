@@ -42,7 +42,7 @@ public class CommandHandlersTests
     }
 
     [Test]
-    public async Task AddUserCommandHandler()
+    public async Task CreateUserCommandHandler()
     {
         // Arrange
         var command = _fixture.Create<CreateUserCommand>();
@@ -61,14 +61,18 @@ public class CommandHandlersTests
         var handler = new CreateUserCommandHandler(_userRepositoryMock.Object);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        var userId = await handler.Handle(command, CancellationToken.None);
 
         // Assert
+        userId.Should().NotBe(Guid.Empty);
         _userRepositoryMock
             .Verify(
-            repo => repo.Create(
-                user,
-                It.IsAny<CancellationToken>()),
+                repo => repo.Create(
+                    It.Is<User>(u =>
+                        u.Name == command.Name &&
+                        u.RoleId == command.RoleId &&
+                        u.CompanyId == command.CompanyId),
+                    It.IsAny<CancellationToken>()),
             Times.Once);
     }
 
@@ -103,8 +107,6 @@ public class CommandHandlersTests
                     user, 
                     role))
             .Returns(token);
-        
-
         
         var handler = new AuthorizeUserCommandHandler(
             _userRepositoryMock.Object, 
@@ -285,13 +287,16 @@ public class CommandHandlersTests
         var handler = new CreateVacancyCommandHandler(_vacancyRepositoryMock.Object);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        var vacancyId = await handler.Handle(command, CancellationToken.None);
 
         // Assert
+        vacancyId.Should().NotBeEmpty();
         _vacancyRepositoryMock
             .Verify(
             repo => repo.Create(
-                vacancy,
+                It.Is<Vacancy>(v =>
+                    v.Description == command.Description &&
+                    v.CompanyId == command.CompanyId),
                 It.IsAny<CancellationToken>()),
             Times.Once);
     }

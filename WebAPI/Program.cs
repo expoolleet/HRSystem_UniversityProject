@@ -23,7 +23,7 @@ builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Appli
 
 builder.Services.AddJwtAuthentication();
 
-builder.Services.AddAuthorization();
+builder.Services.AddCustomAuthorization();
 
 builder.Services.AddOpenApi();
 
@@ -38,17 +38,19 @@ builder.Services.AddSwaggerGen(options =>
 
 var app = builder.Build();
 
-using (var scope = app.Services.CreateScope())
+if (!app.Environment.IsEnvironment("Testing"))
 {
-    var dbContext = scope.ServiceProvider.GetRequiredService<MainDbContext>();
-    
-    //dbContext.Database.EnsureDeleted();
-    
-    dbContext.Database.Migrate();
-    RoleSeeding.SeedDatabase(dbContext);
-    CompanySeeding.SeedDatabase(dbContext);
+    using (var scope = app.Services.CreateScope())
+    {
+        var dbContext = scope.ServiceProvider.GetRequiredService<MainDbContext>();
+        
+        //dbContext.Database.EnsureDeleted();
+        
+        dbContext.Database.Migrate();
+        RoleSeeding.SeedDatabase(dbContext);
+        CompanySeeding.SeedDatabase(dbContext);
+    }
 }
-
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())    
 {
@@ -68,3 +70,6 @@ app.MapControllers();
 
 app.Run();
 
+// Необходимо для работы фабрики в WebApiTest
+// Также нужно в WebApi.csproj добавить <PreserveCompilationContext>true</PreserveCompilationContext>
+public partial class Program { }

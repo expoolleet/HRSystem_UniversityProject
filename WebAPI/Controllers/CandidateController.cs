@@ -5,6 +5,7 @@ using Application.Contexts;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using WebApi.Authorizations;
 using WebApi.Contracts.Requests;
 using WebApi.Contracts.Requests.Candidates;
 using WebApi.Contracts.Responses.Candidates;
@@ -18,13 +19,16 @@ public class CandidateController : ControllerBase
 {
     private readonly IMediator _mediator;
     private readonly IRoleContext _roleContext;
+    private readonly IUserContext _userContext;
 
-    public CandidateController(IMediator mediator, IRoleContext roleContext)
+    public CandidateController(IMediator mediator, IRoleContext roleContext, IUserContext userContext)
     {
         ArgumentNullException.ThrowIfNull(mediator);
         ArgumentNullException.ThrowIfNull(roleContext);
+        ArgumentNullException.ThrowIfNull(userContext);
         _mediator = mediator;
         _roleContext = roleContext;
+        _userContext = userContext;
     }
     
         
@@ -43,7 +47,7 @@ public class CandidateController : ControllerBase
     
     [HttpGet]
     public async Task<IActionResult> GetCandidatesByFilter(
-        [FromForm] GetCandidatesByFilterRequest request, 
+        [FromQuery] GetCandidatesByFilterRequest request, 
         CancellationToken cancellationToken)
     {
         if (!ModelState.IsValid)
@@ -61,6 +65,7 @@ public class CandidateController : ControllerBase
         return Ok(result);
     }
     
+    [Authorize(Policy = AuthPolicies.RequireAdminOrManagerRole)]
     [HttpPost("{candidateId:guid}/approve")]
     public async Task<IActionResult> ApproveCandidate(
         [FromRoute] Guid candidateId,
@@ -71,11 +76,11 @@ public class CandidateController : ControllerBase
         {
             return BadRequest(ModelState);
         }
-        var role = _roleContext.GetUserRoleName(request.UserId, cancellationToken);
+        var userId = await _userContext.GetUserId(cancellationToken);
         var command = new ApproveCandidateCommand
         {
             CandidateId = candidateId,
-            UserId = request.UserId,
+            UserId = userId,
             Feedback = request.Feedback,
         };
         await _mediator.Send(command, cancellationToken);
@@ -86,6 +91,7 @@ public class CandidateController : ControllerBase
         return Ok(response);
     }
     
+    [Authorize(Policy = AuthPolicies.RequireAdminOrManagerRole)]
     [HttpPost("{candidateId:guid}/reject")]
     public async Task<IActionResult> RejectCandidate(
         [FromRoute] Guid candidateId,
@@ -96,10 +102,11 @@ public class CandidateController : ControllerBase
         {
             return BadRequest(ModelState);
         }
+        var userId = await _userContext.GetUserId(cancellationToken);
         var command = new RejectCandidateCommand
         {
             CandidateId = candidateId,
-            UserId = request.UserId,
+            UserId = userId,
             Feedback = request.Feedback,
         };
         await _mediator.Send(command, cancellationToken);
