@@ -11,7 +11,9 @@ builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddControllers();
 
-builder.Services.AddSqLiteContext(builder.Configuration);
+builder.Services.AddScopedInterceptors();
+
+builder.Services.AddDbContext(builder.Configuration);
 
 builder.Services.AddScopedRepositories();
 
@@ -20,9 +22,6 @@ builder.Services.AddScopedServices();
 builder.Services.AddAutoMappers();
 
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(ApplicationAssemblyMarker).Assembly));
-
-builder.Services.AddDbContext<MainDbContext>(options => 
-    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddJwtAuthentication();
 

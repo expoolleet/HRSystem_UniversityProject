@@ -1,8 +1,7 @@
-using System.Data.Common;
 using Application.DomainEvents;
+using Domain.Abstractions;
 using Domain.Candidates;
 using Domain.Companies;
-using Domain.Entities;
 using Domain.Events;
 using Domain.Vacancies;
 using Infrastructure.DbContexts.Configs;
@@ -31,7 +30,10 @@ public class MainDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(UserConfig).Assembly);
+        modelBuilder.Entity<User>().Ignore(x => x.DomainEvents);
+        modelBuilder.Entity<Vacancy>().Ignore(x => x.DomainEvents);
         modelBuilder.Entity<Candidate>().Ignore(x => x.DomainEvents);
+        modelBuilder.Entity<Company>().Ignore(x => x.DomainEvents);
     }
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)

@@ -1,8 +1,9 @@
+using Domain.Abstractions;
 using Domain.Candidates;
 
 namespace Domain.Vacancies;
 
-public sealed class Vacancy
+public sealed class Vacancy : Entity
 {
     public Guid Id { get; private init; }
     public Guid CompanyId { get; private init; }

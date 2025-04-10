@@ -1,6 +1,8 @@
+using Domain.Abstractions;
+
 namespace Domain.Companies;
 
-public sealed class Company
+public sealed class Company : Entity
 {
     private Company(Guid id, string name)
     {

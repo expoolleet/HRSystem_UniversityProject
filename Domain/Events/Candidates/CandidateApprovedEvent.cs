@@ -1,4 +1,4 @@
-namespace Domain.Events;
+namespace Domain.Events.Candidates;
 
 public class CandidateApprovedEvent : IDomainEvent
 {

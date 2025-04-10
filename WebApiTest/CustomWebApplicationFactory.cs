@@ -1,4 +1,5 @@
-﻿using WebApi.Seedings;
+﻿using WebApi;
+using WebApi.Seedings;
 
 namespace WebApiTest;
 

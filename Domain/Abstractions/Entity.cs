@@ -1,6 +1,6 @@
 using Domain.Events;
 
-namespace Domain.Entities;
+namespace Domain.Abstractions;
 
 public abstract class Entity
 {

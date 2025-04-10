@@ -1,6 +1,7 @@
+using Domain.Abstractions;
 using Domain.Companies;
-using Domain.Entities;
 using Domain.Events;
+using Domain.Events.Candidates;
 
 namespace Domain.Candidates;
 
