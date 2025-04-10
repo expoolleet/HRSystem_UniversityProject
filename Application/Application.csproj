@@ -14,4 +14,9 @@
     <ProjectReference Include="..\Domain\Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="DomainEvents\Handlers\Companies\" />
+    <Folder Include="DomainEvents\Handlers\Vacancies\" />
+  </ItemGroup>
+
 </Project>

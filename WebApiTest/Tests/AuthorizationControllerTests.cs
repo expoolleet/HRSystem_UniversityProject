@@ -32,7 +32,6 @@ namespace WebApiTest.Tests
             }
         }
 
-
         [Fact]
         public async Task Authorize_WithValidCredentials_ReturnsOkAndToken()
         {

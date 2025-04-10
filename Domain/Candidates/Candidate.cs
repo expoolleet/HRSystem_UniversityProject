@@ -1,8 +1,10 @@
 using Domain.Companies;
+using Domain.Entities;
+using Domain.Events;
 
 namespace Domain.Candidates;
 
-public sealed class Candidate
+public sealed class Candidate : Entity
 {
     private Candidate(Guid id, Guid vacancyId, Guid? referralId, CandidateDocument document, CandidateWorkflow workflow)
     {
@@ -33,10 +35,16 @@ public sealed class Candidate
         => new(Guid.NewGuid(), vacancyId, referralId, document, workflow);
 
     public void Approve(User user, string feedback)
-        => Workflow.Approve(user, feedback);
+    {
+        Workflow.Approve(user, feedback);
+        AddDomainEvent(new CandidateApprovedEvent(Id));
+    }
 
     public void Reject(User user, string feedback)
-        => Workflow.Reject(user, feedback);
+    {
+        Workflow.Reject(user, feedback);
+        AddDomainEvent(new CandidateRejectedEvent(Id));
+    }
 
     public void Restart()
         => Workflow.Restart();
