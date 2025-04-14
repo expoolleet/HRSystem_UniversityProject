@@ -17,6 +17,8 @@ builder.Services.AddDbContext(builder.Configuration);
 
 builder.Services.AddScopedRepositories();
 
+builder.Services.AddMailService(builder.Configuration);
+
 builder.Services.AddScopedServices();
 
 builder.Services.AddAutoMappers();
@@ -74,4 +76,7 @@ app.Run();
 
 // Необходимо для работы фабрики в WebApiTest
 // Также нужно в WebApi.csproj добавить <PreserveCompilationContext>true</PreserveCompilationContext>
-public partial class Program { }
+namespace WebApi
+{
+    public partial class Program { }
+}

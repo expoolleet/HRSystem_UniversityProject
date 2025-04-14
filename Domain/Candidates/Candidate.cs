@@ -1,6 +1,5 @@
 using Domain.Abstractions;
 using Domain.Companies;
-using Domain.Events;
 using Domain.Events.Candidates;
 
 namespace Domain.Candidates;
@@ -38,7 +37,10 @@ public sealed class Candidate : Entity
     public void Approve(User user, string feedback)
     {
         Workflow.Approve(user, feedback);
-        AddDomainEvent(new CandidateApprovedEvent(Id));
+        if (Status.Equals(CandidateStatus.Approved))
+        {
+            AddDomainEvent(new CandidateApprovedEvent(Id));
+        }
     }
 
     public void Reject(User user, string feedback)

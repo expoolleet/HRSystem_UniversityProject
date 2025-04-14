@@ -1,5 +1,3 @@
-using System.ComponentModel.DataAnnotations;
-
 namespace WebApi.Contracts.Requests.Vacancies;
 
 public class GetVacancyByFilterRequest

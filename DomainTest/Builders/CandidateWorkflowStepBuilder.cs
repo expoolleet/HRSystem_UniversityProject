@@ -1,4 +1,3 @@
-using AutoFixture;
 using AutoFixture.Kernel;
 using Domain.Candidates;
 using Domain.Companies;

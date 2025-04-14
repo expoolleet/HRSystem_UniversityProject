@@ -40,7 +40,8 @@ public class CandidateBuilder : ISpecimenBuilder
         var document = CandidateDocument.Create(
             context.Create<string>(),
             context.Create<int>(),
-            context.Create<string>());
+            context.Create<string>(),
+                    context.Create<string>());
         
         return Candidate.Create(
             context.Create<Guid>(),

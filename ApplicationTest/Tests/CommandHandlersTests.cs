@@ -9,7 +9,6 @@ using Application.Companies.Repositories;
 using Application.Vacancies.Handlers.CommandHandlers;
 using Application.Vacancies.Models.Commands;
 using Application.Vacancies.Repositories;
-using ApplicationTest.Builders;
 using AutoFixture;
 using Domain.Candidates;
 using Domain.Companies;

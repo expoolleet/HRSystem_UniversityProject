@@ -15,9 +15,9 @@ public class CandidateSeeding : ISeeding
             if (vacancy1 != null && vacancy2 != null)
             {
                 context.Candidates.AddRange(
-                    vacancy1.CreateCandidate(CandidateDocument.Create("Candidate 1", 1, "Portfolio"), null),
-                    vacancy1.CreateCandidate(CandidateDocument.Create("Candidate 2", 1, "Portfolio"), null),
-                    vacancy2.CreateCandidate(CandidateDocument.Create("Candidate 3", 1, "Portfolio"), null)
+                    vacancy1.CreateCandidate(CandidateDocument.Create("Candidate 1", 1, "Portfolio", "email@gmail.com"), null),
+                    vacancy1.CreateCandidate(CandidateDocument.Create("Candidate 2", 1, "Portfolio", "email@gmail.com"), null),
+                    vacancy2.CreateCandidate(CandidateDocument.Create("Candidate 3", 1, "Portfolio", "email@gmail.com"), null)
                 );
                 context.SaveChanges();
             }

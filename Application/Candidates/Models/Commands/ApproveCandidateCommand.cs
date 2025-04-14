@@ -1,5 +1,3 @@
-using Domain.Candidates;
-using Domain.Companies;
 using MediatR;
 
 namespace Application.Candidates.Models.Commands;

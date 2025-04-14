@@ -14,4 +14,8 @@ public class ReplyVacancyRequest
     
     [Required]
     public int WorkExperience { get; init; }
+    
+    [Required]
+    [EmailAddress]
+    public required string Email { get; init; }
 }

@@ -1,4 +1,3 @@
-using Domain.Companies;
 
 namespace Domain.Candidates;
 
@@ -8,7 +7,9 @@ public sealed class CandidateDocument
     public string Portfolio { get; private init; }
     public int WorkExperience { get; private init; }
     
-    private CandidateDocument(string name, int workExperience, string portfolio)
+    public string Email { get; private init; }
+    
+    private CandidateDocument(string name, int workExperience, string portfolio, string email)
     {
         ArgumentException.ThrowIfNullOrEmpty(name);
         if (workExperience < 0)
@@ -19,6 +20,7 @@ public sealed class CandidateDocument
         Name = name;
         WorkExperience = workExperience;
         Portfolio = portfolio;
+        Email = email;
     }
     
     private CandidateDocument() { }
@@ -26,6 +28,7 @@ public sealed class CandidateDocument
     public static CandidateDocument Create(
         string name,
         int workExperience,
-        string portfolio
-    ) => new CandidateDocument(name, workExperience, portfolio);
+        string portfolio,
+        string email
+    ) => new CandidateDocument(name, workExperience, portfolio, email);
 }

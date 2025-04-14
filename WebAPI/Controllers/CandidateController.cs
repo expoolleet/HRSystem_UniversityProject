@@ -1,4 +1,3 @@
-using System.Security.Claims;
 using Application.Candidates.Models.Commands;
 using Application.Candidates.Models.Queries;
 using Application.Contexts;
@@ -6,7 +5,6 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Authorizations;
-using WebApi.Contracts.Requests;
 using WebApi.Contracts.Requests.Candidates;
 using WebApi.Contracts.Responses.Candidates;
 

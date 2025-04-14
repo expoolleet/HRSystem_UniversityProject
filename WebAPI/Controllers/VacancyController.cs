@@ -7,7 +7,6 @@ using Domain.Vacancies;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using WebApi.Contracts.Dto.Candidates;
 using WebApi.Contracts.Dto.Vacancies;
 using WebApi.Contracts.Requests.Vacancies;
 

@@ -1,7 +1,5 @@
-﻿using NUnit.Framework;
-using FluentAssertions;
+﻿using FluentAssertions;
 using AutoFixture;
-using AutoFixture.Kernel;
 using Domain.Candidates;
 using Domain.Companies;
 using DomainTest.Builders;

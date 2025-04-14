@@ -1,7 +1,6 @@
 using Application.Candidates.Repositories;
 using Application.Vacancies.Models.Commands;
 using Application.Vacancies.Repositories;
-using Domain.Candidates;
 using MediatR;
 
 namespace Application.Vacancies.Handlers.CommandHandlers;

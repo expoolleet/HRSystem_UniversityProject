@@ -1,5 +1,4 @@
 using Application.Companies.Models.Responses;
-using Domain.Companies;
 using MediatR;
 
 namespace Application.Companies.Models.Commands;

@@ -1,4 +1,3 @@
-using Domain.Companies;
 using MediatR;
 
 namespace Application.Companies.Models.Commands;

@@ -1,7 +1,6 @@
 using AutoFixture;
 using AutoFixture.Kernel;
 using Domain.Candidates;
-using Domain.Companies;
 
 namespace DomainTest.Builders;
 
@@ -17,6 +16,7 @@ public class CandidateDocumentBuilder : ISpecimenBuilder
         return CandidateDocument.Create(
             context.Create<string>(),
             Math.Abs(context.Create<int>()),
-            context.Create<string>());
+            context.Create<string>(),
+                    context.Create<string>());
     }
 }
