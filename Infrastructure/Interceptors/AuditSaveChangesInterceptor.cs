@@ -1,14 +1,89 @@
+using Application.DomainEvents;
 using Domain.Abstractions;
-using Microsoft.EntityFrameworkCore;
+using MediatR;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace Infrastructure.Interceptors;
 
 public class AuditSaveChangesInterceptor : SaveChangesInterceptor
 {
-    public override InterceptionResult<int> SavingChanges(DbContextEventData eventData, InterceptionResult<int> result)
+    private readonly IAuditHelper _auditHelper;
+    private readonly IMediator _mediator;
+
+    public AuditSaveChangesInterceptor(IAuditHelper auditHelper, IMediator mediator)
     {
-        UpdateAuditProperties(eventData.Context);
+        ArgumentNullException.ThrowIfNull(auditHelper);
+        ArgumentNullException.ThrowIfNull(mediator);
+        _auditHelper = auditHelper;
+        _mediator = mediator;
+    }
+    public override int SavedChanges(SaveChangesCompletedEventData eventData, int result)
+    {
+        if (eventData.Context == null)
+        {
+            return base.SavedChanges(eventData, result);
+        }
+        var events = eventData.Context.ChangeTracker
+            .Entries<Entity>()
+            .SelectMany(x => x.Entity.DomainEvents)
+            .ToList();
+        
+        foreach (var entityEntry in eventData.Context.ChangeTracker.Entries<Entity>())
+        {
+            entityEntry.Entity.ClearDomainEvents();
+        }
+
+        foreach (var @event in events)
+        {
+            var domainEventType = @event.GetType();
+            var notificationWrapperType = typeof(DomainEventNotification<>).MakeGenericType(domainEventType);
+            var notificationWrapperInstance = Activator.CreateInstance(notificationWrapperType, @event);
+            if (notificationWrapperInstance is INotification notification)
+            {
+                _mediator.Publish(notification).GetAwaiter().GetResult();
+            }
+        }
+        return base.SavedChanges(eventData, result);
+    }
+
+    public override async ValueTask<int> SavedChangesAsync(SaveChangesCompletedEventData eventData, int result,
+        CancellationToken cancellationToken = new CancellationToken())
+    {
+        if (eventData.Context == null)
+        {
+            return await base.SavedChangesAsync(eventData, result, cancellationToken);
+        }
+        var events = eventData.Context.ChangeTracker
+            .Entries<Entity>()
+            .SelectMany(x => x.Entity.DomainEvents)
+            .ToList();
+        
+        foreach (var entityEntry in eventData.Context.ChangeTracker.Entries<Entity>())
+        {
+            entityEntry.Entity.ClearDomainEvents();
+        }
+
+        foreach (var @event in events)
+        {
+            var domainEventType = @event.GetType();
+            var notificationWrapperType = typeof(DomainEventNotification<>).MakeGenericType(domainEventType);
+            var notificationWrapperInstance = Activator.CreateInstance(notificationWrapperType, @event);
+            if (notificationWrapperInstance is INotification notification)
+            {
+                await _mediator.Publish(notification, cancellationToken);
+            }
+        }
+        return await base.SavedChangesAsync(eventData, result, cancellationToken);
+    }
+
+    public override InterceptionResult<int> SavingChanges(DbContextEventData? eventData, InterceptionResult<int> result)
+    {
+        if (eventData?.Context == null)
+        {
+            return InterceptionResult<int>.SuppressWithResult(-1);
+        }
+            
+        _auditHelper.UpdateAuditProperties(eventData.Context);
         return base.SavingChanges(eventData, result);
     }
 
@@ -17,31 +92,11 @@ public class AuditSaveChangesInterceptor : SaveChangesInterceptor
         InterceptionResult<int> result,
         CancellationToken cancellationToken = default)
     {
-        UpdateAuditProperties(eventData.Context);
+        if (eventData?.Context == null)
+        {
+            return new ValueTask<InterceptionResult<int>>(InterceptionResult<int>.SuppressWithResult(-1));
+        }
+        _auditHelper.UpdateAuditProperties(eventData.Context);
         return base.SavingChangesAsync(eventData, result, cancellationToken);
-    }
-
-    private void UpdateAuditProperties(DbContext context)
-    {
-        if (context == null)
-        {
-            return;
-        }
-        var now = DateTime.UtcNow;
-
-        var entities = context.ChangeTracker.Entries<IAuditableEntity>();
-
-        foreach (var entry in entities)
-        {
-            if (entry.State == EntityState.Added)
-            {
-                entry.Property(e => e.CreatedAt).CurrentValue = now;
-                entry.Property(e => e.UpdatedAt).CurrentValue = now;
-            }
-            else if (entry.State == EntityState.Modified)
-            {
-                entry.Property(e => e.UpdatedAt).CurrentValue = now;
-            }
-        }
     }
 }

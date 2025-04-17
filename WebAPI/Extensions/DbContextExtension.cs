@@ -14,5 +14,5 @@ public static class DbContextExtension
                 x => x.MigrationsAssembly("Infrastructure"))
                 .AddInterceptors(serviceProvider.GetRequiredService<AuditSaveChangesInterceptor>()));
         return services;
-    }
+    }   
 }
