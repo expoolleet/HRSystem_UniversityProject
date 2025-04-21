@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using WebApi.Extensions;
 using WebApi.Seedings;
-using DotNetEnv;
 
 var builder = WebApplication.CreateBuilder(args);
 
-Env.Load();
+builder.Configuration.AddUserSecrets<Program>();
+//Env.Load();
 
 builder.Services.AddHttpContextAccessor();
 
@@ -25,6 +25,8 @@ builder.Services.AddMailService(builder.Configuration);
 builder.Services.AddScopedServices();
 
 builder.Services.AddAutoMappers();
+
+builder.Services.AddBackgroundServices();
 
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(ApplicationAssemblyMarker).Assembly));
 

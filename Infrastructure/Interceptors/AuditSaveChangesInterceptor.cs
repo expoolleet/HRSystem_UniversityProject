@@ -1,6 +1,8 @@
 using Application.DomainEvents;
 using Domain.Abstractions;
+using Infrastructure.Outbox;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace Infrastructure.Interceptors;
@@ -17,72 +19,54 @@ public class AuditSaveChangesInterceptor : SaveChangesInterceptor
         _auditHelper = auditHelper;
         _mediator = mediator;
     }
-    public override int SavedChanges(SaveChangesCompletedEventData eventData, int result)
+
+    private async Task ProcessDomainEventsAsync(DbContext context, CancellationToken cancellationToken)
     {
-        if (eventData.Context == null)
-        {
-            return base.SavedChanges(eventData, result);
-        }
-        var events = eventData.Context.ChangeTracker
+        var events = context.ChangeTracker
             .Entries<Entity>()
             .SelectMany(x => x.Entity.DomainEvents)
             .ToList();
-        
-        foreach (var entityEntry in eventData.Context.ChangeTracker.Entries<Entity>())
-        {
-            entityEntry.Entity.ClearDomainEvents();
-        }
 
         foreach (var @event in events)
         {
-            var domainEventType = @event.GetType();
-            var notificationWrapperType = typeof(DomainEventNotification<>).MakeGenericType(domainEventType);
-            var notificationWrapperInstance = Activator.CreateInstance(notificationWrapperType, @event);
-            if (notificationWrapperInstance is INotification notification)
-            {
-                _mediator.Publish(notification).GetAwaiter().GetResult();
-            }
+            var outboxEvent = OutboxEvent.Create(@event);
+            await context.Set<OutboxEvent>()
+                .AddAsync(outboxEvent, cancellationToken);
         }
-        return base.SavedChanges(eventData, result);
-    }
-
-    public override async ValueTask<int> SavedChangesAsync(SaveChangesCompletedEventData eventData, int result,
-        CancellationToken cancellationToken = new CancellationToken())
-    {
-        if (eventData.Context == null)
-        {
-            return await base.SavedChangesAsync(eventData, result, cancellationToken);
-        }
-        var events = eventData.Context.ChangeTracker
-            .Entries<Entity>()
-            .SelectMany(x => x.Entity.DomainEvents)
-            .ToList();
         
-        foreach (var entityEntry in eventData.Context.ChangeTracker.Entries<Entity>())
+        foreach (var entityEntry in context.ChangeTracker.Entries<Entity>())
         {
             entityEntry.Entity.ClearDomainEvents();
         }
-
-        foreach (var @event in events)
+    }
+    
+        private void ProcessDomainEvents(DbContext context)
         {
-            var domainEventType = @event.GetType();
-            var notificationWrapperType = typeof(DomainEventNotification<>).MakeGenericType(domainEventType);
-            var notificationWrapperInstance = Activator.CreateInstance(notificationWrapperType, @event);
-            if (notificationWrapperInstance is INotification notification)
+            var events = context.ChangeTracker
+                .Entries<Entity>()
+                .SelectMany(x => x.Entity.DomainEvents)
+                .ToList();
+    
+            foreach (var @event in events)
             {
-                await _mediator.Publish(notification, cancellationToken);
+                var outboxEvent = OutboxEvent.Create(@event);
+                context.Set<OutboxEvent>()
+                    .Add(outboxEvent);
+            }
+            
+            foreach (var entityEntry in context.ChangeTracker.Entries<Entity>())
+            {
+                entityEntry.Entity.ClearDomainEvents();
             }
         }
-        return await base.SavedChangesAsync(eventData, result, cancellationToken);
-    }
-
+    
     public override InterceptionResult<int> SavingChanges(DbContextEventData? eventData, InterceptionResult<int> result)
     {
         if (eventData?.Context == null)
         {
             return InterceptionResult<int>.SuppressWithResult(-1);
         }
-            
+        ProcessDomainEvents(eventData.Context);
         _auditHelper.UpdateAuditProperties(eventData.Context);
         return base.SavingChanges(eventData, result);
     }
@@ -96,6 +80,7 @@ public class AuditSaveChangesInterceptor : SaveChangesInterceptor
         {
             return new ValueTask<InterceptionResult<int>>(InterceptionResult<int>.SuppressWithResult(-1));
         }
+        ProcessDomainEventsAsync(eventData.Context, cancellationToken).GetAwaiter().GetResult();
         _auditHelper.UpdateAuditProperties(eventData.Context);
         return base.SavingChangesAsync(eventData, result, cancellationToken);
     }

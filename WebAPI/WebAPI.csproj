@@ -6,11 +6,11 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
         <PreserveCompilationContext>true</PreserveCompilationContext>
+        <UserSecretsId>cb9b3f89-37e7-43e9-b8a4-43777f794f88</UserSecretsId>
     </PropertyGroup>
 
     <ItemGroup>
         <PackageReference Include="AutoMapper" Version="14.0.0" />
-        <PackageReference Include="DotNetEnv" Version="3.1.1" />
         <PackageReference Include="MailKit" Version="4.11.0" />
         <PackageReference Include="MediatR" Version="12.4.1" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.3" />

@@ -5,6 +5,7 @@ using Domain.Companies;
 using Domain.Events;
 using Domain.Vacancies;
 using Infrastructure.DbContexts.Configs;
+using Infrastructure.Outbox;
 using MediatR;
 
 namespace Infrastructure.DbContexts;
@@ -18,6 +19,7 @@ public class MainDbContext(DbContextOptions<MainDbContext> options) : DbContext(
     public DbSet<Candidate> Candidates { get; init; }
     public DbSet<Company> Companies { get; init; }
     public DbSet<Role> Roles { get; init; }
+    public DbSet<OutboxEvent> OutboxEvents { get; init; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

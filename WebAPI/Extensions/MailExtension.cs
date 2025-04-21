@@ -9,7 +9,7 @@ public static class MailExtension
     public static IServiceCollection AddMailService(this IServiceCollection services, IConfiguration configuration)
     {
         services.Configure<MailSettings>(configuration.GetSection("MailSettings"));
-        services.AddTransient<IMailService, MailService>();
+        services.AddScoped<IMailService, MailService>();
         return services;
     }
 }
