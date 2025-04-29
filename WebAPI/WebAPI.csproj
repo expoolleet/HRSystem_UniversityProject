@@ -24,6 +24,7 @@
         <PackageReference Include="Riok.Mapperly" Version="4.2.0" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="8.1.0" />
         <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="8.1.0" />
+        <PackageReference Include="WatchDog.NET" Version="1.4.12" />
     </ItemGroup>
 
     <ItemGroup>

@@ -17,11 +17,10 @@ public class OutboxProcessor : BackgroundService
     
     public OutboxProcessor(IServiceProvider serviceProvider, ILogger<OutboxProcessor> logger)
     {
-        _serviceProvider = serviceProvider;
-        _logger = logger;
         ArgumentNullException.ThrowIfNull(serviceProvider);
         ArgumentNullException.ThrowIfNull(logger);
-        
+        _serviceProvider = serviceProvider;
+        _logger = logger;
     }
     
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
