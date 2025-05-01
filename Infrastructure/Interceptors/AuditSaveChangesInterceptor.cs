@@ -40,27 +40,29 @@ public class AuditSaveChangesInterceptor : SaveChangesInterceptor
         }
     }
     
-        private void ProcessDomainEvents(DbContext context)
+    private void ProcessDomainEvents(DbContext context)
+    {
+        var events = context.ChangeTracker
+            .Entries<Entity>()
+            .SelectMany(x => x.Entity.DomainEvents)
+            .ToList();
+
+        foreach (var @event in events)
         {
-            var events = context.ChangeTracker
-                .Entries<Entity>()
-                .SelectMany(x => x.Entity.DomainEvents)
-                .ToList();
-    
-            foreach (var @event in events)
-            {
-                var outboxEvent = OutboxEvent.Create(@event);
-                context.Set<OutboxEvent>()
-                    .Add(outboxEvent);
-            }
-            
-            foreach (var entityEntry in context.ChangeTracker.Entries<Entity>())
-            {
-                entityEntry.Entity.ClearDomainEvents();
-            }
+            var outboxEvent = OutboxEvent.Create(@event);
+            context.Set<OutboxEvent>()
+                .Add(outboxEvent);
         }
-    
-    public override InterceptionResult<int> SavingChanges(DbContextEventData? eventData, InterceptionResult<int> result)
+        
+        foreach (var entityEntry in context.ChangeTracker.Entries<Entity>())
+        {
+            entityEntry.Entity.ClearDomainEvents();
+        }
+    }
+
+    public override InterceptionResult<int> SavingChanges(
+        DbContextEventData? eventData, 
+        InterceptionResult<int> result)
     {
         if (eventData?.Context == null)
         {

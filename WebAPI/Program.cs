@@ -32,6 +32,8 @@ builder.Services.AddBackgroundServices();
 
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(ApplicationAssemblyMarker).Assembly));
 
+builder.Services.AddRabbitMq(builder.Configuration);
+
 builder.Services.AddJwtAuthentication();
 
 builder.Services.AddCustomAuthorization();

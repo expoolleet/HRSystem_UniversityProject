@@ -5,6 +5,7 @@ using Infrastructure.Outbox;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using WebApi.Abstractions.Services;
 
 namespace WebApi.BackgroundServices;
 
@@ -29,7 +30,7 @@ public class OutboxProcessor : BackgroundService
         {
             try
             {
-                await ProcessOutboxMessages(stoppingToken);
+                await ProcessOutboxEvents(stoppingToken);
             }
             catch (Exception e)
             {
@@ -39,42 +40,46 @@ public class OutboxProcessor : BackgroundService
         }
     }
 
-    private async Task ProcessOutboxMessages(CancellationToken stoppingToken)
+    private async Task ProcessOutboxEvents(CancellationToken stoppingToken)
     {
         using var scope = _serviceProvider.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<MainDbContext>();
-        var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
+        var producer = scope.ServiceProvider.GetRequiredService<IMessageProducer>();
 
-        var messages = await context.OutboxEvents
+        var events = await context.OutboxEvents
                 .Where(e => e.ProcessedOn == null)
                 .OrderBy(e => e.OccurredOn)
                 .Take(BatchSize)
                 .ToListAsync(stoppingToken);
-        foreach (var message in messages)
+        foreach (var @event in events)
         {
             try
             {
-                var domainEvent = DeserializeDomainEvent(message);
+                var domainEvent = DeserializeDomainEvent(@event);
                 if (domainEvent != null)
                 {
-                    var domainEventType = Type.GetType(message.Type);;
+                    var domainEventType = Type.GetType(@event.Type);;
                     if (domainEventType != null)
                     {
                         var notificationType = typeof(DomainEventNotification<>).MakeGenericType(domainEventType);
                         var notificationInstance = Activator.CreateInstance(notificationType, domainEvent);
                         if (notificationInstance is INotification notification)
                         {
-                            await mediator.Publish(notification, stoppingToken);
-                            _logger.LogInformation("Domain event {DomainEvent} published", domainEvent.GetType().Name);
+                            var message = SerializeNotification(notification);
+                            var type = notification.GetType().AssemblyQualifiedName;
+                            await producer.PublishAsync(type!, message, stoppingToken);
+                            _logger.LogInformation(
+                                "Domain event {DomainEvent} published to RabbitMQ queue successfully", 
+                                domainEvent.GetType().Name);
                         }
                     }
                 }
-                message.ProcessedOn = DateTime.UtcNow;
+                @event.ProcessedOn = DateTime.UtcNow;
                 await context.SaveChangesAsync(stoppingToken);
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "Error while processing outbox message {MessageId}", message.Id);
+                _logger.LogError(e, "Error while processing outbox message {MessageId}", @event.Id);
             }
         }
     }
@@ -87,5 +92,10 @@ public class OutboxProcessor : BackgroundService
             return null;
         }
         return JsonConvert.DeserializeObject(outboxEvent.Content, type) as IDomainEvent;
+    }
+
+    private static string SerializeNotification(INotification notification)
+    {
+        return JsonConvert.SerializeObject(notification);
     }
 }

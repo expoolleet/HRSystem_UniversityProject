@@ -27,7 +27,7 @@ public class CandidateApprovedEventHandler : INotificationHandler<DomainEventNot
             EmailToName = candidate.Document.Name,
             EmailSubject = "Your Candidate Information",
             EmailBody =
-                $"Congratulations, {candidate.Document.Name}!\nYour candidature is approved!\n\nregards, HR Team.",
+                $"Congratulations, {candidate.Document.Name}!\nYour candidature for the vacancy is approved!\n\nregards, HR Team.",
         };
         await _mailService.SendMail(mailData);
     }
